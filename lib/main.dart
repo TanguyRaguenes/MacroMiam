@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/add_screen.dart';
 import 'screens/list_screen.dart';
 import 'screens/stats_screen.dart';
+import 'pages/add_manually_aliment_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,11 +15,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MyHomePage(title: 'MacroMiam 🍽️'),
+        '/addManuallyAliment': (context) => AddManuallyAlimentPage(),
+      },
       title: 'MacroMiam 🍽️',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange.shade300),
       ),
-      home: const MyHomePage(title: 'MacroMiam 🍽️'),
     );
   }
 }
