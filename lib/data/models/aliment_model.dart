@@ -1,11 +1,11 @@
-class CustomAlimentModel {
+class AlimentModel {
   final String name;
   final double protein;
   final double carbohydrates;
   final double fat;
   final double calories;
 
-  CustomAlimentModel({
+  AlimentModel({
     required this.name,
     required this.protein,
     required this.carbohydrates,
@@ -23,8 +23,8 @@ class CustomAlimentModel {
     };
   }
 
-  factory CustomAlimentModel.fromMap(Map<String, dynamic> aliment) {
-    return CustomAlimentModel(
+  factory AlimentModel.fromMap(Map<String, dynamic> aliment) {
+    return AlimentModel(
       name: aliment['name'],
       protein: aliment['protein'],
       carbohydrates: aliment['carbohydrates'],

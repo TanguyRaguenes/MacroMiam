@@ -1,19 +1,19 @@
-import 'package:macromiam/models/custom_aliment_model.dart';
+import 'package:macromiam/data/models/aliment_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DataBaseHelper {
-  DataBaseHelper._privateConstructor();
+class SqliteDbService {
+  SqliteDbService._privateConstructor();
 
-  static final _dataBaseHelperInstance = DataBaseHelper._privateConstructor();
+  static final _instance = SqliteDbService._privateConstructor();
 
-  factory DataBaseHelper() => _dataBaseHelperInstance;
+  factory SqliteDbService() => _instance;
 
-  static Database? _database;
+  static Database? _db;
 
   Future<Database> get getDatabase async {
-    _database ??= await _initDatabase();
-    return _database!;
+    _db ??= await _initDatabase();
+    return _db!;
   }
 
   Future<Database> _initDatabase() async {
@@ -29,18 +29,18 @@ class DataBaseHelper {
     );
   }
 
-  Future<void> insertAliment(CustomAlimentModel aliment) async {
+  Future<void> insertAliment(AlimentModel aliment) async {
     final db = await getDatabase;
     print('insertAliment :');
     print(aliment.toString());
     db.insert('aliments', aliment.toMap());
   }
 
-  Future<List<CustomAlimentModel>> getAliments() async {
+  Future<List<AlimentModel>> getAliments() async {
     final db = await getDatabase;
     final List<Map<String, dynamic>> maps = await db.query('aliments');
     return List.generate(maps.length, (i) {
-      return CustomAlimentModel.fromMap(maps[i]);
+      return AlimentModel.fromMap(maps[i]);
     });
   }
 }

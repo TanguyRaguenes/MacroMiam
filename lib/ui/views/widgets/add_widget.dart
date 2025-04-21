@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AddScreen extends StatelessWidget {
-  const AddScreen({super.key});
+class AddWidget extends StatelessWidget {
+  const AddWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class AddScreen extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: () {
                   print('click');
-                  Navigator.pushNamed(context, '/addManuallyAliment');
+                  Navigator.pushNamed(context, '/addAliment');
                 },
                 label: Text('Manually add a new aliment'),
                 icon: Icon(Icons.edit),

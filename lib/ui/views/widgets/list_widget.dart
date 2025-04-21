@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:macromiam/helpers/database_helper.dart';
-import 'package:macromiam/models/custom_aliment_model.dart';
+import 'package:macromiam/data/services/sqlite_db_service.dart';
+import 'package:macromiam/data/models/aliment_model.dart';
+import 'package:provider/provider.dart';
 
-class ListScreen extends StatefulWidget {
-  const ListScreen({super.key});
+class ListWidget extends StatefulWidget {
+  const ListWidget({super.key});
 
   @override
-  State<ListScreen> createState() => _ListScreenState();
+  State<ListWidget> createState() => _ListWidgetState();
 }
 
-class _ListScreenState extends State<ListScreen> {
-  late List<CustomAlimentModel> _aliments = [];
+class _ListWidgetState extends State<ListWidget> {
+  late List<AlimentModel> _aliments = [];
 
   @override
   void initState() {
@@ -19,10 +20,11 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   Future<void> _fetchAliments() async {
-    final List<CustomAlimentModel> fetchAliments =
-        await DataBaseHelper().getAliments();
+    final sqliteDbService = context.read<SqliteDbService>();
+    final List<AlimentModel> fetchAliments =
+        await sqliteDbService.getAliments();
     print(DateTime.now());
-    for (CustomAlimentModel aliment in fetchAliments) {
+    for (AlimentModel aliment in fetchAliments) {
       print(aliment.toString());
     }
 

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import 'screens/add_screen.dart';
-import 'screens/list_screen.dart';
-import 'screens/stats_screen.dart';
-import 'pages/add_manually_aliment_page.dart';
+import '../../data/services/sqlite_db_service.dart';
+import 'ui/view_models/add_aliment_viewmodel.dart';
+import 'data/repositories/add_aliment_repository.dart';
+import 'ui/views/widgets/add_widget.dart';
+import 'ui/views/widgets/list_widget.dart';
+import 'ui/views/widgets/stats_widget.dart';
+import 'ui/views/screens/add_aliment_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,15 +18,34 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: '/',
-      routes: {
-        '/': (context) => MyHomePage(title: 'MacroMiam 🍽️'),
-        '/addManuallyAliment': (context) => AddManuallyAlimentPage(),
-      },
-      title: 'MacroMiam 🍽️',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange.shade300),
+    return MultiProvider(
+      providers: [
+        Provider(create: (_) => SqliteDbService()),
+
+        Provider(
+          create:
+              (context) => AddAlimentRepository(
+                sqliteDbService: context.read<SqliteDbService>(),
+              ),
+        ),
+
+        Provider(
+          create:
+              (context) => AddAlimentViewModel(
+                addAlimentRepository: context.read<AddAlimentRepository>(),
+              ),
+        ),
+      ],
+      child: MaterialApp(
+        initialRoute: '/',
+        routes: {
+          '/': (context) => MyHomePage(title: 'MacroMiam 🍽️'),
+          '/addAliment': (context) => AddAlimentScreen(),
+        },
+        title: 'MacroMiam 🍽️',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange.shade300),
+        ),
       ),
     );
   }
@@ -40,11 +63,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var index = 0;
 
-  final List<Widget> _screens = [
-    const AddScreen(),
-    const ListScreen(),
-    const StatsScreen(),
-  ];
+  final List<Widget> _widgets = [AddWidget(), ListWidget(), StatsWidget()];
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
 
-      body: SizedBox.expand(child: _screens[index]),
+      body: SizedBox.expand(child: _widgets[index]),
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index,

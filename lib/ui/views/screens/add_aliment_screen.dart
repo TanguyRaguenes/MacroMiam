@@ -1,53 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:macromiam/helpers/database_helper.dart';
-import 'package:macromiam/models/custom_aliment_model.dart';
-import 'package:macromiam/models/textformfield_model.dart';
+import 'package:macromiam/data/models/textformfield_model.dart';
+import 'package:macromiam/ui/view_models/add_aliment_viewmodel.dart';
+import 'package:provider/provider.dart';
 
-class AddManuallyAlimentPage extends StatefulWidget {
-  const AddManuallyAlimentPage({super.key});
+class AddAlimentScreen extends StatefulWidget {
+  const AddAlimentScreen({super.key});
 
   @override
-  State<AddManuallyAlimentPage> createState() => _AddManuallyAlimentPageState();
+  State<AddAlimentScreen> createState() => _AddAlimentScreenState();
 }
 
-class _AddManuallyAlimentPageState extends State<AddManuallyAlimentPage> {
+class _AddAlimentScreenState extends State<AddAlimentScreen> {
   var _formKey = GlobalKey<FormState>();
 
-  var _alimentName;
-  var _amountOfProtein;
-  var _amountOfCarbohydrates;
-  var _amountOfFat;
+  var _name;
+  var _protein;
+  var _carbohydrates;
+  var _fat;
   var _calories;
 
-  late List<TextFormFieldModel> inputs;
-
   @override
-  void initState() {
-    super.initState();
-    inputs = [
+  Widget build(BuildContext context) {
+    List<TextFormFieldModel> inputs = [
       TextFormFieldModel(
         label: 'Aliment name',
         hintText: 'Please enter the name',
         type: TextInputType.text,
-        onSaved: (value) => _alimentName = value,
+        onSaved: (value) => _name = value,
       ),
       TextFormFieldModel(
         label: 'Amount of protein per 100g',
         hintText: 'In grams',
         type: TextInputType.number,
-        onSaved: (value) => _amountOfProtein = value,
+        onSaved: (value) => _protein = value,
       ),
       TextFormFieldModel(
         label: 'Amount of carbohydrates per 100g',
         hintText: 'In grams',
         type: TextInputType.number,
-        onSaved: (value) => _amountOfCarbohydrates = value,
+        onSaved: (value) => _carbohydrates = value,
       ),
       TextFormFieldModel(
         label: 'Amount of fat per 100g',
         hintText: 'In grams',
         type: TextInputType.number,
-        onSaved: (value) => _amountOfFat = value,
+        onSaved: (value) => _fat = value,
       ),
       TextFormFieldModel(
         label: 'Amount of calories per 100g',
@@ -56,10 +53,7 @@ class _AddManuallyAlimentPageState extends State<AddManuallyAlimentPage> {
         onSaved: (value) => _calories = value,
       ),
     ];
-  }
 
-  @override
-  Widget build(BuildContext context) {
     String? _validator(String? value) {
       if (value == Null || value!.isEmpty) {
         return 'This field is required.';
@@ -70,19 +64,14 @@ class _AddManuallyAlimentPageState extends State<AddManuallyAlimentPage> {
     void submit() {
       if (_formKey.currentState!.validate()) {
         _formKey.currentState!.save();
-        print('alimentName $_alimentName');
-        print(_amountOfProtein);
-        print(_amountOfCarbohydrates);
-        print(_amountOfFat);
-        print(_calories);
-        final aliment = CustomAlimentModel(
-          name: _alimentName,
-          protein: double.tryParse(_amountOfProtein) ?? 0.0,
-          carbohydrates: double.tryParse(_amountOfCarbohydrates) ?? 0.0,
-          fat: double.tryParse(_amountOfFat) ?? 0.0,
-          calories: double.tryParse(_calories) ?? 0.0,
+        final addAlimentViewModel = context.read<AddAlimentViewModel>();
+        addAlimentViewModel.saveAliment(
+          _name,
+          _protein,
+          _carbohydrates,
+          _fat,
+          _calories,
         );
-        DataBaseHelper().insertAliment(aliment);
       }
     }
 
@@ -113,17 +102,3 @@ class _AddManuallyAlimentPageState extends State<AddManuallyAlimentPage> {
     );
   }
 }
-
-// class MyInput {
-//   final String label;
-//   final String hintText;
-//   final TextInputType type;
-//   final FormFieldSetter<String>? onSaved;
-//
-//   MyInput({
-//     required this.label,
-//     required this.hintText,
-//     required this.type,
-//     this.onSaved,
-//   });
-// }
