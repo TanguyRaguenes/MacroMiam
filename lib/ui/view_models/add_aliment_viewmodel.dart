@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import '../../data/models/textformfield_model.dart';
-import '../../data/repositories/add_aliment_repository.dart';
+import '../../data/repositories/aliment_repository.dart';
 
 import '../../data/models/aliment_model.dart';
 
 class AddAlimentViewModel {
-  AddAlimentViewModel({required AddAlimentRepository addAlimentRepository}) {
-    _addAlimentRepository = addAlimentRepository;
+  AddAlimentViewModel({required AlimentRepository alimentRepository}) {
+    _alimentRepository = alimentRepository;
   }
 
-  late final AddAlimentRepository _addAlimentRepository;
+  late final AlimentRepository _alimentRepository;
 
   Future<void> saveAliment(
     String name,
@@ -26,6 +26,6 @@ class AddAlimentViewModel {
       calories: double.tryParse(calories) ?? 0.0,
     );
 
-    await _addAlimentRepository.saveAliment(aliment);
+    await _alimentRepository.saveAliment(aliment);
   }
 }

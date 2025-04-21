@@ -1,4 +1,5 @@
 class AlimentModel {
+  final int? id;
   final String name;
   final double protein;
   final double carbohydrates;
@@ -6,6 +7,7 @@ class AlimentModel {
   final double calories;
 
   AlimentModel({
+    this.id,
     required this.name,
     required this.protein,
     required this.carbohydrates,
@@ -13,8 +15,9 @@ class AlimentModel {
     required this.calories,
   });
 
-  Map<String, Object> toMap() {
+  Map<String, Object?> toMap() {
     return {
+      if (id != null) 'id': id,
       'name': name,
       'protein': protein,
       'carbohydrates': carbohydrates,
@@ -25,6 +28,7 @@ class AlimentModel {
 
   factory AlimentModel.fromMap(Map<String, dynamic> aliment) {
     return AlimentModel(
+      id: aliment['id'],
       name: aliment['name'],
       protein: aliment['protein'],
       carbohydrates: aliment['carbohydrates'],
@@ -35,6 +39,6 @@ class AlimentModel {
 
   @override
   String toString() {
-    return 'CustomAlimentModel{name: $name, protein: $protein, carbohydrates: $carbohydrates, fat: $fat, calories: $calories}';
+    return 'CustomAlimentModel{id: $id, name: $name, protein: $protein, carbohydrates: $carbohydrates, fat: $fat, calories: $calories}';
   }
 }

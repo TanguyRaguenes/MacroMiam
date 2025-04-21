@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:macromiam/ui/view_models/list_viewmodel.dart';
 import '../../data/services/sqlite_db_service.dart';
 import 'ui/view_models/add_aliment_viewmodel.dart';
-import 'data/repositories/add_aliment_repository.dart';
+import 'data/repositories/aliment_repository.dart';
 import 'ui/views/widgets/add_widget.dart';
 import 'ui/views/widgets/list_widget.dart';
 import 'ui/views/widgets/stats_widget.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
 
         Provider(
           create:
-              (context) => AddAlimentRepository(
+              (context) => AlimentRepository(
                 sqliteDbService: context.read<SqliteDbService>(),
               ),
         ),
@@ -32,7 +33,13 @@ class MyApp extends StatelessWidget {
         Provider(
           create:
               (context) => AddAlimentViewModel(
-                addAlimentRepository: context.read<AddAlimentRepository>(),
+                alimentRepository: context.read<AlimentRepository>(),
+              ),
+        ),
+        ChangeNotifierProvider(
+          create:
+              (context) => ListViewModel(
+                alimentRepository: context.read<AlimentRepository>(),
               ),
         ),
       ],

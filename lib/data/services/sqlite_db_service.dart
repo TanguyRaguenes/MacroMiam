@@ -29,18 +29,21 @@ class SqliteDbService {
     );
   }
 
-  Future<void> insertAliment(AlimentModel aliment) async {
+  Future<void> saveAliment(AlimentModel aliment) async {
     final db = await getDatabase;
     print('insertAliment :');
     print(aliment.toString());
     db.insert('aliments', aliment.toMap());
   }
 
-  Future<List<AlimentModel>> getAliments() async {
+  Future<List<Map<String, dynamic>>> getAliments() async {
     final db = await getDatabase;
     final List<Map<String, dynamic>> maps = await db.query('aliments');
-    return List.generate(maps.length, (i) {
-      return AlimentModel.fromMap(maps[i]);
-    });
+    return maps;
+  }
+
+  Future<void> deleteAliment(int id) async {
+    final db = await getDatabase;
+    db.delete('aliments', where: 'id=?', whereArgs: [id]);
   }
 }
