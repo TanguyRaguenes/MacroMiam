@@ -25,6 +25,7 @@ class AddWidget extends StatelessWidget {
               ),
             ),
           ),
+          Text('OR'),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
@@ -38,7 +39,6 @@ class AddWidget extends StatelessWidget {
               ),
             ),
           ),
-          Text('ADD'),
         ],
       ),
     );

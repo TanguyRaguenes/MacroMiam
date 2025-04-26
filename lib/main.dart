@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
               ),
         ),
 
-        Provider(
+        ChangeNotifierProvider(
           create:
               (context) => AddAlimentViewModel(
                 alimentRepository: context.read<AlimentRepository>(),

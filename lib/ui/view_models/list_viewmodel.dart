@@ -6,7 +6,6 @@ import '../../data/repositories/aliment_repository.dart';
 class ListViewModel extends ChangeNotifier {
   ListViewModel({required AlimentRepository alimentRepository}) {
     _alimentRepository = alimentRepository;
-    getAliments();
   }
 
   late final AlimentRepository _alimentRepository;

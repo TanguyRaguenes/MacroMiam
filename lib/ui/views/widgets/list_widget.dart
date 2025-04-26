@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:macromiam/data/services/sqlite_db_service.dart';
-import 'package:macromiam/data/models/aliment_model.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:macromiam/ui/view_models/list_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -15,17 +16,14 @@ class _ListWidgetState extends State<ListWidget> {
   @override
   void initState() {
     super.initState();
-    // _fetchAliments();
+    Future.microtask(() {
+      getAliments();
+    });
   }
 
-  // Future<void> _fetchAliments() async {
-  //   _listViewModel = context.read<ListViewModel>();
-  //   final List<AlimentModel> fetchAliments = await _listViewModel.getAliments();
-  //
-  //   setState(() {
-  //     _aliments = fetchAliments;
-  //   });
-  // }
+  Future<void> getAliments() async {
+    context.read<ListViewModel>().getAliments();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +48,30 @@ class _ListWidgetState extends State<ListWidget> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
+                          Flexible(
+                            flex: 3,
+                            child: AspectRatio(
+                              aspectRatio: 1,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child:
+                                    aliments[index].path != null
+                                        ? Image.file(
+                                          fit: BoxFit.cover,
+                                          File(aliments[index].path!),
+                                        )
+                                        : SvgPicture.asset(
+                                          'assets/images/No-Image-Placeholder.svg',
+                                          fit: BoxFit.cover,
+                                        ),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(width: 12),
+
+                          Flexible(
+                            flex: 5,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -71,25 +92,47 @@ class _ListWidgetState extends State<ListWidget> {
                             ),
                           ),
 
-                          Column(
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.add),
-                                onPressed:
-                                    () => print(
-                                      'Ajouter ${aliments[index].name}',
-                                    ),
+                          SizedBox(width: 12),
+
+                          Flexible(
+                            flex: 2,
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.add),
+                                    onPressed:
+                                        () => print(
+                                          'Ajouter ${aliments[index].name}',
+                                        ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed:
+                                        () => {
+                                          listViewModel.deleteAliment(
+                                            aliments[index].id!,
+                                          ),
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                '${aliments[index].name} deleted',
+                                              ),
+                                              backgroundColor: Colors.green,
+                                              duration: Duration(
+                                                milliseconds: 500,
+                                              ),
+                                            ),
+                                          ),
+                                        },
+                                  ),
+                                ],
                               ),
-                              IconButton(
-                                icon: Icon(Icons.delete),
-                                onPressed:
-                                    () => {
-                                      listViewModel.deleteAliment(
-                                        aliments[index].id!,
-                                      ),
-                                    },
-                              ),
-                            ],
+                            ),
                           ),
                         ],
                       ),

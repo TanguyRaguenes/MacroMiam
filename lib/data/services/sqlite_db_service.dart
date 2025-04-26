@@ -22,7 +22,7 @@ class SqliteDbService {
       path,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE aliments(id INTEGER PRIMARY KEY AUTOINCREMENT, name Text, protein double, carbohydrates double, fat double, calories double )',
+          'CREATE TABLE aliments(id INTEGER PRIMARY KEY AUTOINCREMENT, name Text, protein double, carbohydrates double, fat double, calories double, path String)',
         );
       },
       version: 1,
