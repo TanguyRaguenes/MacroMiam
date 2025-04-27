@@ -35,6 +35,15 @@ class _ListWidgetState extends State<ListWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          TextField(
+            decoration: InputDecoration(
+              suffixIcon: Icon(Icons.search),
+              hintText: 'Search',
+            ),
+            onChanged: (value) {
+              listViewModel.filterList(value);
+            },
+          ),
           if (aliments.isEmpty) CircularProgressIndicator(),
           if (aliments.isNotEmpty)
             Expanded(

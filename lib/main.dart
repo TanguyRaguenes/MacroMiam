@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:macromiam/ui/view_models/list_viewmodel.dart';
-import '../../data/services/sqlite_db_service.dart';
+import 'package:macromiam/providers/theme_provider.dart';
+import 'package:macromiam/ui/views/screens/language_screen.dart';
+import 'package:macromiam/ui/views/widgets/drawer_widget.dart';
+import 'ui/view_models/list_viewmodel.dart';
+import 'data/services/sqlite_db_service.dart';
 import 'ui/view_models/add_aliment_viewmodel.dart';
 import 'data/repositories/aliment_repository.dart';
 import 'ui/views/widgets/add_widget.dart';
@@ -8,18 +11,14 @@ import 'ui/views/widgets/list_widget.dart';
 import 'ui/views/widgets/stats_widget.dart';
 import 'ui/views/screens/add_aliment_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
+
+import 'providers/locale_provider.dart';
 
 void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
+  runApp(
+    MultiProvider(
       providers: [
         Provider(create: (_) => SqliteDbService()),
 
@@ -42,18 +41,50 @@ class MyApp extends StatelessWidget {
                 alimentRepository: context.read<AlimentRepository>(),
               ),
         ),
+        ChangeNotifierProvider(create: (context) => LocaleProvider()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
-      child: MaterialApp(
-        initialRoute: '/',
-        routes: {
-          '/': (context) => MyHomePage(title: 'MacroMiam 🍽️'),
-          '/addAliment': (context) => AddAlimentScreen(),
-        },
-        title: 'MacroMiam 🍽️',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange.shade300),
+      child: const MyApp(),
+    ),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    ThemeProvider themeProvider = context.watch<ThemeProvider>();
+    return MaterialApp(
+      locale: context.watch<LocaleProvider>().locale,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MyHomePage(title: 'MacroMiam 🍽️'),
+        '/addAliment': (context) => AddAlimentScreen(),
+        '/language': (context) => LanguageScreen(),
+      },
+      title: 'MacroMiam 🍽️',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.orange.shade300,
+          brightness: Brightness.light,
         ),
       ),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.orange.shade300,
+          brightness: Brightness.dark,
+        ),
+      ),
+      themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [Locale('en'), Locale('fr')],
     );
   }
 }
@@ -74,7 +105,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    LocaleProvider localeProvider = context.watch<LocaleProvider>();
+    ThemeProvider themeProvider = context.watch<ThemeProvider>();
     return Scaffold(
+      drawer: Drawer(child: DrawerWidget()),
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -85,19 +119,47 @@ class _MyHomePageState extends State<MyHomePage> {
             return IconButton(
               icon: const Icon(Icons.menu),
               onPressed: () {
-                print('Open menu');
+                Scaffold.of(context).openDrawer();
               },
               tooltip: ('Open menu'),
             );
           },
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.account_circle_rounded),
-            tooltip: 'Open account',
-            onPressed: () {
-              print('Open account');
-            },
+        actions: [
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(
+                context,
+              ).colorScheme.onInverseSurface.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: IconButton(
+              onPressed: () {
+                themeProvider.toggleTheme();
+              },
+              icon: Text(
+                themeProvider.getThemeEmoji(),
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+          ),
+          SizedBox(width: 1),
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(
+                context,
+              ).colorScheme.onInverseSurface.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(50),
+            ),
+            child: IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/language');
+              },
+              icon: Text(
+                localeProvider.flagEmojis[localeProvider.locale.languageCode]!,
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
           ),
         ],
       ),

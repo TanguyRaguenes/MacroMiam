@@ -131,28 +131,33 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
                     onSaved: input.onSaved,
                   ),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (addAlimentViewModel.isCameraVisible) {
-                            addAlimentViewModel.toggleIsCameraVisible();
-                          }
-                          addAlimentViewModel.selectFile();
-                        },
-                        child: Text('Pick an image'),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (addAlimentViewModel.isCameraVisible) {
+                              addAlimentViewModel.toggleIsCameraVisible();
+                            }
+                            addAlimentViewModel.selectFile();
+                          },
+                          child: Text('Pick an image'),
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: addAlimentViewModel.toggleIsCameraVisible,
-                        child: Text('Take a picture'),
+                      SizedBox(width: 8),
+                      Text('OR'),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: addAlimentViewModel.toggleIsCameraVisible,
+                          child: Text('Take a picture'),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
 
                 Expanded(
@@ -183,11 +188,14 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
                 ),
 
                 // Bouton final
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: submit,
-                    child: Text('Add this food item to my list'),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: submit,
+                      child: Text('Add this food item to my list'),
+                    ),
                   ),
                 ),
               ],

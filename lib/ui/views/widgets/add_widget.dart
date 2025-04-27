@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:macromiam/l10n/app_localizations.dart';
 
 class AddWidget extends StatelessWidget {
   const AddWidget({super.key});
@@ -20,7 +21,11 @@ class AddWidget extends StatelessWidget {
                   print('click');
                   Navigator.pushNamed(context, '/addAliment');
                 },
-                label: Text('Manually add a new aliment'),
+                label: Text(
+                  AppLocalizations.of(
+                    context,
+                  )!.addWidget_manuallyAddANewAliment,
+                ),
                 icon: Icon(Icons.edit),
               ),
             ),
@@ -34,7 +39,9 @@ class AddWidget extends StatelessWidget {
                 onPressed: () {
                   print('click');
                 },
-                label: Text('Scan an aliment barcode'),
+                label: Text(
+                  AppLocalizations.of(context)!.addWidget_scanAnAlimentBarcode,
+                ),
                 icon: Icon(Icons.qr_code_outlined),
               ),
             ),
