@@ -77,9 +77,12 @@ class AddAlimentViewModel extends ChangeNotifier {
     _imagePath = null;
   }
 
-  Future<void> fetchData({required AlimentViewModel alimentViewModel}) async {
+  Future<void> fetchData({
+    required AlimentViewModel alimentViewModel,
+    required String barcode,
+  }) async {
     AlimentApiModel? aliment = await _apiService.fetchData(
-      url: "https://world.openfoodfacts.org/api/v2/product/737628064502.json",
+      url: "https://world.openfoodfacts.org/api/v2/product/$barcode.json",
     );
     print(aliment.toString());
 

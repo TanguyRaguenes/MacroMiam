@@ -170,6 +170,7 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
                                 addAlimentViewModel.imagePath = path;
                                 addAlimentViewModel.toggleIsCameraVisible();
                               },
+                              onBarcodeDetected: null,
                             )
                             : ClipRRect(
                               borderRadius: BorderRadius.circular(8),
