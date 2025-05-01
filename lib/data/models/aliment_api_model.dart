@@ -1,3 +1,7 @@
+import 'dart:ui';
+
+import '../../providers/locale_provider.dart';
+
 class AlimentApiModel {
   String? id;
 
@@ -23,9 +27,13 @@ class AlimentApiModel {
   }
 
   factory AlimentApiModel.fromMap(Map<String, dynamic> apiData) {
+    final LocaleProvider localeProvider = LocaleProvider();
+    String languageCode = localeProvider.locale.languageCode;
     return AlimentApiModel(
       id: apiData['_id'],
-      imageFrontUrl: apiData['selected_images']['front']['small']['en'],
+      imageFrontUrl:
+          apiData['selected_images']['front']['small'][languageCode] ??
+          apiData['image_front_small_url'],
       imageIngredientsUrl:
           apiData['selected_images']['ingredients']['small']['en'],
       imageNutritionUrl: apiData['selected_images']['nutrition']['small']['en'],
