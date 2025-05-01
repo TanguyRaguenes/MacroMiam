@@ -1,16 +1,25 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:macromiam/data/models/aliment_api_model.dart';
+import 'package:macromiam/data/services/api_service.dart';
+import 'package:macromiam/ui/view_models/aliment_viewmodel.dart';
+import 'package:path/path.dart';
 
 import '../../data/repositories/aliment_repository.dart';
 import '../../data/models/aliment_model.dart';
 import 'package:file_picker/file_picker.dart';
 
 class AddAlimentViewModel extends ChangeNotifier {
-  AddAlimentViewModel({required AlimentRepository alimentRepository}) {
+  AddAlimentViewModel({
+    required AlimentRepository alimentRepository,
+    required ApiService apiService,
+  }) {
     _alimentRepository = alimentRepository;
+    _apiService = apiService;
   }
 
   late final AlimentRepository _alimentRepository;
+  late final ApiService _apiService;
 
   bool _isCameraVisible = false;
 
@@ -66,5 +75,14 @@ class AddAlimentViewModel extends ChangeNotifier {
   void disposeState() {
     _isCameraVisible = false;
     _imagePath = null;
+  }
+
+  Future<void> fetchData({required AlimentViewModel alimentViewModel}) async {
+    AlimentApiModel? aliment = await _apiService.fetchData(
+      url: "https://world.openfoodfacts.org/api/v2/product/737628064502.json",
+    );
+    print(aliment.toString());
+
+    alimentViewModel.alimentApiModel = aliment;
   }
 }

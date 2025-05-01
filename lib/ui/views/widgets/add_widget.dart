@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:macromiam/l10n/app_localizations.dart';
+import 'package:macromiam/ui/view_models/add_aliment_viewmodel.dart';
+import 'package:path/path.dart';
+import 'package:provider/provider.dart';
+
+import '../../view_models/aliment_viewmodel.dart';
 
 class AddWidget extends StatelessWidget {
   const AddWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final AddAlimentViewModel addAlimentViewModel =
+        context.read<AddAlimentViewModel>();
+    final AlimentViewModel alimentViewModel = context.read<AlimentViewModel>();
     return Container(
       color: Theme.of(context).colorScheme.primaryContainer,
       child: Column(
@@ -37,7 +45,10 @@ class AddWidget extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () {
-                  print('click');
+                  addAlimentViewModel.fetchData(
+                    alimentViewModel: alimentViewModel,
+                  );
+                  Navigator.pushNamed(context, '/aliment');
                 },
                 label: Text(
                   AppLocalizations.of(context)!.addWidget_scanAnAlimentBarcode,

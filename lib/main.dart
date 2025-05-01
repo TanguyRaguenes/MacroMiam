@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:macromiam/data/services/api_service.dart';
 import 'package:macromiam/providers/theme_provider.dart';
+import 'package:macromiam/ui/view_models/aliment_viewmodel.dart';
+import 'package:macromiam/ui/views/screens/aliment_screen.dart';
 import 'package:macromiam/ui/views/screens/language_screen.dart';
 import 'package:macromiam/ui/views/widgets/drawer_widget.dart';
 import 'ui/view_models/list_viewmodel.dart';
@@ -20,6 +23,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
+        Provider(create: (_) => ApiService()),
         Provider(create: (_) => SqliteDbService()),
 
         Provider(
@@ -33,6 +37,7 @@ void main() {
           create:
               (context) => AddAlimentViewModel(
                 alimentRepository: context.read<AlimentRepository>(),
+                apiService: context.read<ApiService>(),
               ),
         ),
         ChangeNotifierProvider(
@@ -41,6 +46,7 @@ void main() {
                 alimentRepository: context.read<AlimentRepository>(),
               ),
         ),
+        ChangeNotifierProvider(create: (context) => AlimentViewModel()),
         ChangeNotifierProvider(create: (context) => LocaleProvider()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
@@ -63,6 +69,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => MyHomePage(title: 'MacroMiam 🍽️'),
         '/addAliment': (context) => AddAlimentScreen(),
         '/language': (context) => LanguageScreen(),
+        '/aliment': (context) => AlimentScreen(),
       },
       title: 'MacroMiam 🍽️',
       theme: ThemeData(
