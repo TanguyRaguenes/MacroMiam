@@ -3,7 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:macromiam/data/models/textformfield_model.dart';
-import 'package:macromiam/ui/view_models/add_aliment_viewmodel.dart';
+import 'package:macromiam/ui/view_models/aliment_vm.dart';
+import 'package:macromiam/ui/views/widgets/choose_image_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/camera_widget.dart';
@@ -18,29 +19,24 @@ class AddAlimentScreen extends StatefulWidget {
 class _AddAlimentScreenState extends State<AddAlimentScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  var _name;
-  var _protein;
-  var _carbohydrates;
-  var _fat;
-  var _calories;
+  String? _name;
+  String? _protein;
+  String? _carbohydrates;
+  String? _fat;
+  String? _calories;
+  String? _imagePath;
 
-  late final AddAlimentViewModel _addAlimentViewModel;
+  late final AlimentVm _addAlimentViewModel;
 
   @override
   void initState() {
     super.initState();
-    _addAlimentViewModel = context.read<AddAlimentViewModel>();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _addAlimentViewModel.disposeState();
+    _addAlimentViewModel = context.read<AlimentVm>();
   }
 
   @override
   Widget build(BuildContext context) {
-    final addAlimentViewModel = context.watch<AddAlimentViewModel>();
+    final addAlimentViewModel = context.watch<AlimentVm>();
 
     List<TextFormFieldModel> inputs = [
       TextFormFieldModel(
@@ -48,30 +44,35 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
         hintText: 'Please enter the name',
         type: TextInputType.text,
         onSaved: (value) => _name = value,
+        image: null,
       ),
       TextFormFieldModel(
         label: 'Amount of protein per 100g',
         hintText: 'In grams',
         type: TextInputType.number,
         onSaved: (value) => _protein = value,
+        image: 'assets/images/proteins_nobg.png',
       ),
       TextFormFieldModel(
         label: 'Amount of carbohydrates per 100g',
         hintText: 'In grams',
         type: TextInputType.number,
         onSaved: (value) => _carbohydrates = value,
+        image: 'assets/images/carbohydrates_nobg.png',
       ),
       TextFormFieldModel(
         label: 'Amount of fat per 100g',
         hintText: 'In grams',
         type: TextInputType.number,
         onSaved: (value) => _fat = value,
+        image: 'assets/images/fat_nobg.png',
       ),
       TextFormFieldModel(
         label: 'Amount of calories per 100g',
         hintText: 'In kcal',
         type: TextInputType.number,
         onSaved: (value) => _calories = value,
+        image: 'assets/images/energy_nobg.png',
       ),
     ];
 
@@ -86,11 +87,12 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
       if (_formKey.currentState!.validate()) {
         _formKey.currentState!.save();
         addAlimentViewModel.saveAliment(
-          _name,
-          _protein,
-          _carbohydrates,
-          _fat,
-          _calories,
+          name: _name!,
+          protein: _protein!,
+          carbohydrates: _carbohydrates!,
+          fat: _fat!,
+          calories: _calories!,
+          imagePath: _imagePath!,
         );
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -111,97 +113,52 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: Container(
-        width: double.infinity,
-        height: MediaQuery.of(context).size.height,
         color: Theme.of(context).colorScheme.primaryContainer,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                for (var input in inputs)
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: input.label,
-                      hintText: input.hintText,
-                    ),
-                    keyboardType: input.type,
-                    validator: validator,
-                    onSaved: input.onSaved,
-                  ),
+        child: Column(
+          children: [
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  for (var input in inputs)
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: input.label,
+                        hintText: input.hintText,
 
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (addAlimentViewModel.isCameraVisible) {
-                              addAlimentViewModel.toggleIsCameraVisible();
-                            }
-                            addAlimentViewModel.selectFile();
-                          },
-                          child: Text('Pick an image'),
-                        ),
+                        prefixIcon:
+                            input.image != null
+                                ? Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                    input.image!,
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                )
+                                : null,
                       ),
-                      SizedBox(width: 8),
-                      Text('OR'),
-                      SizedBox(width: 8),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: addAlimentViewModel.toggleIsCameraVisible,
-                          child: Text('Take a picture'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                Expanded(
-                  child: AnimatedSwitcher(
-                    duration: Duration(milliseconds: 300),
-                    child:
-                        addAlimentViewModel.isCameraVisible
-                            ? CameraWidget(
-                              onPictureTaken: (path) {
-                                addAlimentViewModel.imagePath = path;
-                                addAlimentViewModel.toggleIsCameraVisible();
-                              },
-                              onBarcodeDetected: null,
-                            )
-                            : ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child:
-                                  addAlimentViewModel.imagePath != null
-                                      ? Image.file(
-                                        File(addAlimentViewModel.imagePath!),
-                                        fit: BoxFit.cover,
-                                      )
-                                      : SvgPicture.asset(
-                                        'assets/images/No-Image-Placeholder.svg',
-                                        fit: BoxFit.cover,
-                                      ),
-                            ),
-                  ),
-                ),
-
-                // Bouton final
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: submit,
-                      child: Text('Add this food item to my list'),
+                      keyboardType: input.type,
+                      validator: validator,
+                      onSaved: input.onSaved,
                     ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+            Expanded(
+              child: ChooseImageWidget(
+                onImageChosen: (imagePath) {
+                  _imagePath = imagePath;
+                },
+                imageUrl: null,
+              ),
+            ),
+
+            ElevatedButton(
+              onPressed: submit,
+              child: Text('Add this food item to my list'),
+            ),
+          ],
         ),
       ),
     );

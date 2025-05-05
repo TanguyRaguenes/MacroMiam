@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:macromiam/ui/view_models/list_viewmodel.dart';
+import 'package:macromiam/ui/view_models/list_vm.dart';
 import 'package:provider/provider.dart';
 
 class ListWidget extends StatefulWidget {
@@ -22,12 +22,12 @@ class _ListWidgetState extends State<ListWidget> {
   }
 
   Future<void> getAliments() async {
-    context.read<ListViewModel>().getAliments();
+    context.read<ListVm>().getAliments();
   }
 
   @override
   Widget build(BuildContext context) {
-    final listViewModel = context.watch<ListViewModel>();
+    final listViewModel = context.watch<ListVm>();
     final aliments = listViewModel.aliments;
     return Container(
       color: Theme.of(context).colorScheme.primaryContainer,

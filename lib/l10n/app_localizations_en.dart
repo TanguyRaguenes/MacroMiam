@@ -13,4 +13,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addWidget_scanAnAlimentBarcode => 'Scan an aliment barcode';
+
+  @override
+  String get energy => 'energy';
+
+  @override
+  String get proteins => 'proteins';
+
+  @override
+  String get carbohydrates => 'carbohydrates';
+
+  @override
+  String get fat => 'fat';
 }

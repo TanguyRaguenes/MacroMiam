@@ -32,11 +32,14 @@ class AlimentApiModel {
     return AlimentApiModel(
       id: apiData['_id'],
       imageFrontUrl:
-          apiData['selected_images']['front']['small'][languageCode] ??
-          apiData['image_front_small_url'],
+          apiData['selected_images']['front']['display'][languageCode] ??
+          apiData['image_front_url'],
       imageIngredientsUrl:
-          apiData['selected_images']['ingredients']['small']['en'],
-      imageNutritionUrl: apiData['selected_images']['nutrition']['small']['en'],
+          apiData['selected_images']['ingredients']['display'][languageCode] ??
+          apiData['image_ingredients_url'],
+      imageNutritionUrl:
+          apiData['selected_images']['nutrition']['display'][languageCode] ??
+          apiData['image_nutrition_url'],
       nutriments: apiData['nutriments'],
       productName: apiData['product_name'],
     );

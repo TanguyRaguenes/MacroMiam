@@ -4,22 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
 class CameraWidget extends StatefulWidget {
-  final void Function(String)? onBarcodeDetected;
   final void Function(String)? onPictureTaken;
 
-  const CameraWidget({
-    super.key,
-    required this.onPictureTaken,
-    required this.onBarcodeDetected,
-  });
+  const CameraWidget({super.key, required this.onPictureTaken});
 
   @override
   State<CameraWidget> createState() => _CameraWidgetState();
 }
 
 class _CameraWidgetState extends State<CameraWidget> {
-  late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
+  late final CameraController _controller;
+  late final Future<void> _initializeControllerFuture;
 
   Future<void> setupCamera() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -47,13 +42,15 @@ class _CameraWidgetState extends State<CameraWidget> {
       future: _initializeControllerFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return Stack(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                child: CameraPreview(_controller),
-              ),
-              if (widget.onPictureTaken != null)
+          return Expanded(
+            child: Stack(
+              children: [
+                Center(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: CameraPreview(_controller),
+                  ),
+                ),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
@@ -71,7 +68,8 @@ class _CameraWidgetState extends State<CameraWidget> {
                     ),
                   ),
                 ),
-            ],
+              ],
+            ),
           );
         } else {
           return const Center(child: CircularProgressIndicator());

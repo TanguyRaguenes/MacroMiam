@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import '../../data/models/aliment_model.dart';
 import '../../data/repositories/aliment_repository.dart';
 
-class ListViewModel extends ChangeNotifier {
-  ListViewModel({required AlimentRepository alimentRepository}) {
+class ListVm extends ChangeNotifier {
+  ListVm({required AlimentRepository alimentRepository}) {
     _alimentRepository = alimentRepository;
   }
 

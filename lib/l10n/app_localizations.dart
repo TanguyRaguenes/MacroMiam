@@ -106,6 +106,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scan an aliment barcode'**
   String get addWidget_scanAnAlimentBarcode;
+
+  /// No description provided for @energy.
+  ///
+  /// In en, this message translates to:
+  /// **'energy'**
+  String get energy;
+
+  /// No description provided for @proteins.
+  ///
+  /// In en, this message translates to:
+  /// **'proteins'**
+  String get proteins;
+
+  /// No description provided for @carbohydrates.
+  ///
+  /// In en, this message translates to:
+  /// **'carbohydrates'**
+  String get carbohydrates;
+
+  /// No description provided for @fat.
+  ///
+  /// In en, this message translates to:
+  /// **'fat'**
+  String get fat;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

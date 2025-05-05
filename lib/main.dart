@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:macromiam/data/services/api_service.dart';
 import 'package:macromiam/providers/theme_provider.dart';
-import 'package:macromiam/ui/view_models/aliment_viewmodel.dart';
 import 'package:macromiam/ui/views/screens/aliment_screen.dart';
 import 'package:macromiam/ui/views/screens/language_screen.dart';
 import 'package:macromiam/ui/views/widgets/drawer_widget.dart';
-import 'ui/view_models/list_viewmodel.dart';
+import 'ui/view_models/list_vm.dart';
 import 'data/services/sqlite_db_service.dart';
-import 'ui/view_models/add_aliment_viewmodel.dart';
+import 'ui/view_models/aliment_vm.dart';
 import 'data/repositories/aliment_repository.dart';
 import 'ui/views/widgets/add_widget.dart';
 import 'ui/views/widgets/list_widget.dart';
@@ -35,18 +34,16 @@ void main() {
 
         ChangeNotifierProvider(
           create:
-              (context) => AddAlimentViewModel(
+              (context) => AlimentVm(
                 alimentRepository: context.read<AlimentRepository>(),
                 apiService: context.read<ApiService>(),
               ),
         ),
         ChangeNotifierProvider(
           create:
-              (context) => ListViewModel(
-                alimentRepository: context.read<AlimentRepository>(),
-              ),
+              (context) =>
+                  ListVm(alimentRepository: context.read<AlimentRepository>()),
         ),
-        ChangeNotifierProvider(create: (context) => AlimentViewModel()),
         ChangeNotifierProvider(create: (context) => LocaleProvider()),
         ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
@@ -74,7 +71,7 @@ class MyApp extends StatelessWidget {
       title: 'MacroMiam 🍽️',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.orange.shade300,
+          seedColor: Colors.pink.shade300,
           brightness: Brightness.light,
         ),
       ),
