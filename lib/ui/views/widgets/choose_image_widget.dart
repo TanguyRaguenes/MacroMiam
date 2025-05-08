@@ -7,12 +7,12 @@ import 'camera_widget.dart';
 
 class ChooseImageWidget extends StatefulWidget {
   final void Function(String)? onImageChosen;
-  final String? imageUrl;
+  final String? pathOrUrl;
 
   const ChooseImageWidget({
     super.key,
     required this.onImageChosen,
-    required this.imageUrl,
+    required this.pathOrUrl,
   });
 
   @override
@@ -21,13 +21,13 @@ class ChooseImageWidget extends StatefulWidget {
 
 class _ChooseImageWidgetState extends State<ChooseImageWidget> {
   bool _isCameraVisible = false;
-  String? _imagePath;
+  String? _imagePathUrl;
 
   @override
   void initState() {
     super.initState();
     _isCameraVisible = false;
-    _imagePath = null;
+    _imagePathUrl = widget.pathOrUrl;
   }
 
   @override
@@ -43,7 +43,7 @@ class _ChooseImageWidgetState extends State<ChooseImageWidget> {
       if (result != null) {
         String path = File(result.files.single.path!).path;
         setState(() {
-          _imagePath = path;
+          _imagePathUrl = path;
         });
         widget.onImageChosen!(path);
       }
@@ -56,6 +56,7 @@ class _ChooseImageWidgetState extends State<ChooseImageWidget> {
           children: [
             ElevatedButton(
               onPressed: () {
+                FocusManager.instance.primaryFocus?.unfocus();
                 _isCameraVisible ? toggleIsCameraVisible() : null;
                 selectFile();
               },
@@ -66,6 +67,7 @@ class _ChooseImageWidgetState extends State<ChooseImageWidget> {
             SizedBox(width: 8),
             ElevatedButton(
               onPressed: () {
+                FocusManager.instance.primaryFocus?.unfocus();
                 toggleIsCameraVisible();
               },
               child: Text('Take a picture'),
@@ -76,7 +78,7 @@ class _ChooseImageWidgetState extends State<ChooseImageWidget> {
             ? CameraWidget(
               onPictureTaken: (path) {
                 setState(() {
-                  _imagePath = path;
+                  _imagePathUrl = path;
                 });
                 widget.onImageChosen!(path);
                 toggleIsCameraVisible();
@@ -91,13 +93,16 @@ class _ChooseImageWidgetState extends State<ChooseImageWidget> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child:
-                          _imagePath != null
-                              ? Image.file(File(_imagePath!), fit: BoxFit.cover)
-                              : widget.imageUrl != null
-                              ? Image.network(
-                                widget.imageUrl!,
-                                fit: BoxFit.cover,
-                              )
+                          _imagePathUrl != null
+                              ? _imagePathUrl!.substring(0, 4) == 'http'
+                                  ? Image.network(
+                                    _imagePathUrl!,
+                                    fit: BoxFit.cover,
+                                  )
+                                  : Image.file(
+                                    File(_imagePathUrl!),
+                                    fit: BoxFit.cover,
+                                  )
                               : SvgPicture.asset(
                                 'assets/images/No-Image-Placeholder.svg',
                                 fit: BoxFit.cover,

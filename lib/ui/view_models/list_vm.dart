@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart';
+import 'package:macromiam/ui/view_models/aliment_vm.dart';
 
 import '../../data/models/aliment_model.dart';
 import '../../data/repositories/aliment_repository.dart';
@@ -25,8 +29,11 @@ class ListVm extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> deleteAliment(int id) async {
-    await _alimentRepository.deleteAliment(id);
+  Future<void> deleteAliment({
+    required int id,
+    required String? pathOrUrl,
+  }) async {
+    await _alimentRepository.deleteAliment(id: id, pathOrUrl: pathOrUrl);
     await getAliments();
   }
 

@@ -22,7 +22,7 @@ class SqliteDbService {
       path,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE aliments(id INTEGER PRIMARY KEY AUTOINCREMENT, name Text, protein double, carbohydrates double, fat double, calories double, path String)',
+          'CREATE TABLE aliments(id INTEGER PRIMARY KEY AUTOINCREMENT, name text, proteins double, carbohydrates double, fat double, calories double, pathOrUrl String)',
         );
       },
       version: 1,
@@ -36,6 +36,24 @@ class SqliteDbService {
     db.insert('aliments', aliment.toMap());
   }
 
+  Future<void> updateAliment(AlimentModel aliment) async {
+    final db = await getDatabase;
+    print('updateAliment :');
+    print(aliment.toString());
+    db.rawUpdate(
+      'UPDATE aliments SET name=?, proteins=?,carbohydrates=?,fat=?,calories=?,pathOrUrl=? WHERE id=?',
+      [
+        aliment.name,
+        aliment.proteins,
+        aliment.carbohydrates,
+        aliment.fat,
+        aliment.calories,
+        aliment.pathOrUrl,
+        aliment.id,
+      ],
+    );
+  }
+
   Future<List<Map<String, dynamic>>> getAliments() async {
     final db = await getDatabase;
     final List<Map<String, dynamic>> maps = await db.query('aliments');
@@ -45,5 +63,14 @@ class SqliteDbService {
   Future<void> deleteAliment(int id) async {
     final db = await getDatabase;
     db.delete('aliments', where: 'id=?', whereArgs: [id]);
+  }
+
+  Future<bool> isPathUsed({required String path}) async {
+    final db = await getDatabase;
+    final result = await db.rawQuery(
+      'SELECT 1 FROM aliments WHERE pathOrUrl = ? LIMIT 1',
+      [path],
+    );
+    return result.isNotEmpty;
   }
 }

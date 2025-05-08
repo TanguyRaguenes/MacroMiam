@@ -6,6 +6,7 @@ class TextFormFieldModel {
   final TextInputType type;
   final FormFieldSetter<String>? onSaved;
   final String? image;
+  final String? initialValue;
 
   TextFormFieldModel({
     required this.label,
@@ -13,5 +14,6 @@ class TextFormFieldModel {
     required this.type,
     required this.onSaved,
     required this.image,
+    required this.initialValue,
   });
 }

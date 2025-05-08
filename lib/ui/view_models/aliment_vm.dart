@@ -11,6 +11,17 @@ class AlimentVm extends ChangeNotifier {
 
   AlimentVm({required this.alimentRepository, required this.apiService});
 
+  AlimentModel? _alimentModel;
+
+  AlimentModel? getAlimentModel() {
+    return _alimentModel;
+  }
+
+  void setAlimentModel(AlimentModel? alimentModel) {
+    _alimentModel = alimentModel;
+    notifyListeners();
+  }
+
   AlimentApiModel? _alimentApiModel;
 
   AlimentApiModel? getAlimentApiModel() {
@@ -23,20 +34,22 @@ class AlimentVm extends ChangeNotifier {
   }
 
   Future<void> saveAliment({
+    required int? id,
     required String name,
     required String protein,
     required String carbohydrates,
     required String fat,
     required String calories,
-    required String imagePath,
+    required String pathOrUrl,
   }) async {
     final aliment = AlimentModel(
+      id: id,
       name: name,
-      protein: double.tryParse(protein) ?? 0.0,
+      proteins: double.tryParse(protein) ?? 0.0,
       carbohydrates: double.tryParse(carbohydrates) ?? 0.0,
       fat: double.tryParse(fat) ?? 0.0,
       calories: double.tryParse(calories) ?? 0.0,
-      path: imagePath,
+      pathOrUrl: pathOrUrl,
     );
 
     await alimentRepository.saveAliment(aliment);

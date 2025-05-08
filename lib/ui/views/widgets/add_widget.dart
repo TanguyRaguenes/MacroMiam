@@ -53,6 +53,7 @@ class _AddWidgetState extends State<AddWidget> {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       print('click');
+                      alimentVm.setAlimentModel(null);
                       Navigator.pushNamed(context, '/addAliment');
                     },
                     label: Text(
