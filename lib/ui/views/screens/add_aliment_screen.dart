@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:macromiam/data/models/textformfield_model.dart';
@@ -25,7 +26,8 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
   String? _carbohydrates;
   String? _fat;
   String? _calories;
-  String? _imagePath;
+  String? _pathOrUrl;
+  XFile? _cacheImage;
 
   @override
   void initState() {
@@ -98,7 +100,8 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
           carbohydrates: _carbohydrates!,
           fat: _fat!,
           calories: _calories!,
-          pathOrUrl: _imagePath!,
+          cacheImage: _cacheImage,
+          pathOrUrl: _pathOrUrl,
         );
 
         listVm.getAliments();
@@ -162,8 +165,8 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
                   ),
                   Expanded(
                     child: ChooseImageWidget(
-                      onImageChosen: (imagePath) {
-                        _imagePath = imagePath;
+                      onImageChosen: (cacheImage) {
+                        _cacheImage = cacheImage;
                       },
                       pathOrUrl: alimentModel?.pathOrUrl,
                     ),

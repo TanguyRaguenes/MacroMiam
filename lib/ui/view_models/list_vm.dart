@@ -1,18 +1,13 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart';
-import 'package:macromiam/ui/view_models/aliment_vm.dart';
-
+import 'package:macromiam/data/services/image_service.dart';
 import '../../data/models/aliment_model.dart';
 import '../../data/repositories/aliment_repository.dart';
 
 class ListVm extends ChangeNotifier {
-  ListVm({required AlimentRepository alimentRepository}) {
-    _alimentRepository = alimentRepository;
-  }
+  final AlimentRepository alimentRepository;
+  final ImageService imageService;
 
-  late final AlimentRepository _alimentRepository;
+  ListVm({required this.alimentRepository, required this.imageService});
 
   List<AlimentModel> _aliments = [];
   List<AlimentModel> _alimentsBackup = [];
@@ -21,7 +16,7 @@ class ListVm extends ChangeNotifier {
 
   Future<void> getAliments() async {
     final List<Map<String, dynamic>> maps =
-        await _alimentRepository.getAliments();
+        await alimentRepository.getAliments();
     _alimentsBackup = List.generate(maps.length, (i) {
       return AlimentModel.fromMap(maps[i]);
     });
@@ -33,7 +28,10 @@ class ListVm extends ChangeNotifier {
     required int id,
     required String? pathOrUrl,
   }) async {
-    await _alimentRepository.deleteAliment(id: id, pathOrUrl: pathOrUrl);
+    await alimentRepository.deleteAliment(id: id, pathOrUrl: pathOrUrl);
+    if (pathOrUrl != null) {
+      await imageService.deleteImage(pathOrUrl: pathOrUrl);
+    }
     await getAliments();
   }
 

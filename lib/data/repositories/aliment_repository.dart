@@ -29,22 +29,5 @@ class AlimentRepository {
     required String? pathOrUrl,
   }) async {
     await _sqliteDbService.deleteAliment(id);
-
-    if (pathOrUrl != null && pathOrUrl.substring(0, 4) != 'http') {
-      bool isPathUsed = await _sqliteDbService.isPathUsed(path: pathOrUrl);
-      if (!isPathUsed) {
-        if (pathOrUrl.contains('file_picker')) {
-          final Directory directory = Directory(path.dirname(pathOrUrl));
-          if (await directory.exists()) {
-            await directory.delete(recursive: true);
-          }
-        } else {
-          final File file = File(pathOrUrl);
-          if (await file.exists()) {
-            await file.delete();
-          }
-        }
-      }
-    }
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:macromiam/data/services/api_service.dart';
+import 'package:macromiam/data/services/file_picker_service.dart';
+import 'package:macromiam/data/services/image_service.dart';
 import 'package:macromiam/providers/theme_provider.dart';
 import 'package:macromiam/ui/views/screens/aliment_screen.dart';
 import 'package:macromiam/ui/views/screens/language_screen.dart';
@@ -24,28 +26,39 @@ void main() {
       providers: [
         Provider(create: (_) => ApiService()),
         Provider(create: (_) => SqliteDbService()),
+        Provider(create: (_) => FilePickerService()),
 
         Provider(
           create:
-              (context) => AlimentRepository(
+              (BuildContext context) => ImageService(
+                sqliteDbService: context.read<SqliteDbService>(),
+              ),
+        ),
+
+        Provider(
+          create:
+              (BuildContext context) => AlimentRepository(
                 sqliteDbService: context.read<SqliteDbService>(),
               ),
         ),
 
         ChangeNotifierProvider(
           create:
-              (context) => AlimentVm(
+              (BuildContext context) => AlimentVm(
                 alimentRepository: context.read<AlimentRepository>(),
                 apiService: context.read<ApiService>(),
+                imageService: context.read<ImageService>(),
               ),
         ),
         ChangeNotifierProvider(
           create:
-              (context) =>
-                  ListVm(alimentRepository: context.read<AlimentRepository>()),
+              (BuildContext context) => ListVm(
+                alimentRepository: context.read<AlimentRepository>(),
+                imageService: context.read<ImageService>(),
+              ),
         ),
-        ChangeNotifierProvider(create: (context) => LocaleProvider()),
-        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: const MyApp(),
     ),

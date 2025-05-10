@@ -156,8 +156,8 @@ class _AlimentScreenState extends State<AlimentScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ChooseImageWidget(
-                        onImageChosen: (path) {
-                          alimentToSave['pathOrUrl'] = path;
+                        onImageChosen: (cacheImage) {
+                          alimentToSave['cacheImage'] = cacheImage;
                         },
                         pathOrUrl: alimentToDisplay.imageFrontUrl,
                       ),
@@ -175,6 +175,7 @@ class _AlimentScreenState extends State<AlimentScreen> {
                               alimentToSave['carbohydrates'].toString(),
                           fat: alimentToSave['fat'].toString(),
                           calories: alimentToSave['calories'].toString(),
+                          cacheImage: alimentToSave['cacheImage'],
                           pathOrUrl: alimentToSave['pathOrUrl'],
                         );
                         ScaffoldMessenger.of(context).showSnackBar(

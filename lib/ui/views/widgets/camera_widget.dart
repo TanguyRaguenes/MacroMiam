@@ -2,9 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:macromiam/data/services/image_service.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 class CameraWidget extends StatefulWidget {
-  final void Function(String)? onPictureTaken;
+  final void Function(XFile)? onPictureTaken;
 
   const CameraWidget({super.key, required this.onPictureTaken});
 
@@ -38,6 +42,10 @@ class _CameraWidgetState extends State<CameraWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final ImageService saveImageService = context.read<ImageService>();
+    final ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(
+      context,
+    );
     return FutureBuilder(
       future: _initializeControllerFuture,
       builder: (context, snapshot) {
@@ -58,10 +66,17 @@ class _CameraWidgetState extends State<CameraWidget> {
                     child: FloatingActionButton(
                       onPressed: () async {
                         try {
-                          final image = await _controller.takePicture();
-                          widget.onPictureTaken!(image.path);
+                          final XFile cacheImage =
+                              await _controller.takePicture();
+                          widget.onPictureTaken?.call(cacheImage);
                         } catch (e) {
-                          print(e);
+                          scaffoldMessengerState.showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "Not enough space available or camera error",
+                              ),
+                            ),
+                          );
                         }
                       },
                       child: const Icon(Icons.camera_alt),

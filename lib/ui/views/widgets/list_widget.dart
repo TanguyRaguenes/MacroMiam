@@ -102,7 +102,7 @@ class _ListWidgetState extends State<ListWidget> {
                                                   ),
                                                 )
                                             : SvgPicture.asset(
-                                              'assets/images/No-Image-Placeholder.svg',
+                                              'assets/images/no_image_placeholder.svg',
                                               fit: BoxFit.cover,
                                             ),
                                   ),

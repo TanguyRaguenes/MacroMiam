@@ -1,12 +1,15 @@
 import 'dart:io';
-import 'package:file_picker/file_picker.dart';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:macromiam/data/repositories/aliment_repository.dart';
+import 'package:macromiam/data/services/file_picker_service.dart';
+import 'package:provider/provider.dart';
 
 import 'camera_widget.dart';
 
 class ChooseImageWidget extends StatefulWidget {
-  final void Function(String)? onImageChosen;
+  final void Function(XFile)? onImageChosen;
   final String? pathOrUrl;
 
   const ChooseImageWidget({
@@ -32,21 +35,18 @@ class _ChooseImageWidgetState extends State<ChooseImageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final FilePickerService filePickerService =
+        context.read<FilePickerService>();
+    final ScaffoldMessengerState scaffoldMessengerState = ScaffoldMessenger.of(
+      context,
+    );
+
+    final AlimentRepository alimentRepository =
+        context.read<AlimentRepository>();
     void toggleIsCameraVisible() {
       setState(() {
         _isCameraVisible = !_isCameraVisible;
       });
-    }
-
-    Future<void> selectFile() async {
-      FilePickerResult? result = await FilePicker.platform.pickFiles();
-      if (result != null) {
-        String path = File(result.files.single.path!).path;
-        setState(() {
-          _imagePathUrl = path;
-        });
-        widget.onImageChosen!(path);
-      }
     }
 
     return Column(
@@ -54,11 +54,26 @@ class _ChooseImageWidgetState extends State<ChooseImageWidget> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+            //###FILE PICKER###
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 FocusManager.instance.primaryFocus?.unfocus();
                 _isCameraVisible ? toggleIsCameraVisible() : null;
-                selectFile();
+                final String? previousImagePath = _imagePathUrl;
+                try {
+                  await filePickerService.selectFile(
+                    onFilePicked: (cacheImage) async {
+                      setState(() {
+                        _imagePathUrl = cacheImage.path;
+                      });
+                      widget.onImageChosen?.call(cacheImage);
+                    },
+                  );
+                } catch (e) {
+                  scaffoldMessengerState.showSnackBar(
+                    SnackBar(content: Text('Error : $e')),
+                  );
+                }
               },
               child: Text('Pick an image'),
             ),
@@ -74,13 +89,14 @@ class _ChooseImageWidgetState extends State<ChooseImageWidget> {
             ),
           ],
         ),
+        // ###CAMERA###
         _isCameraVisible
             ? CameraWidget(
-              onPictureTaken: (path) {
+              onPictureTaken: (cacheImage) {
                 setState(() {
-                  _imagePathUrl = path;
+                  _imagePathUrl = cacheImage.path;
                 });
-                widget.onImageChosen!(path);
+                widget.onImageChosen?.call(cacheImage);
                 toggleIsCameraVisible();
               },
             )
@@ -104,7 +120,7 @@ class _ChooseImageWidgetState extends State<ChooseImageWidget> {
                                     fit: BoxFit.cover,
                                   )
                               : SvgPicture.asset(
-                                'assets/images/No-Image-Placeholder.svg',
+                                'assets/images/no_image_placeholder.svg',
                                 fit: BoxFit.cover,
                               ),
                     ),

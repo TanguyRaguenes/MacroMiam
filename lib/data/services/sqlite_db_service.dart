@@ -30,14 +30,14 @@ class SqliteDbService {
   }
 
   Future<void> saveAliment(AlimentModel aliment) async {
-    final db = await getDatabase;
+    final Database db = await getDatabase;
     print('insertAliment :');
     print(aliment.toString());
     db.insert('aliments', aliment.toMap());
   }
 
   Future<void> updateAliment(AlimentModel aliment) async {
-    final db = await getDatabase;
+    final Database db = await getDatabase;
     print('updateAliment :');
     print(aliment.toString());
     db.rawUpdate(
@@ -55,22 +55,24 @@ class SqliteDbService {
   }
 
   Future<List<Map<String, dynamic>>> getAliments() async {
-    final db = await getDatabase;
-    final List<Map<String, dynamic>> maps = await db.query('aliments');
-    return maps;
+    final Database db = await getDatabase;
+    final List<Map<String, dynamic>> queryResult = await db.query('aliments');
+    return queryResult;
   }
 
   Future<void> deleteAliment(int id) async {
-    final db = await getDatabase;
+    final Database db = await getDatabase;
     db.delete('aliments', where: 'id=?', whereArgs: [id]);
   }
 
   Future<bool> isPathUsed({required String path}) async {
-    final db = await getDatabase;
-    final result = await db.rawQuery(
-      'SELECT 1 FROM aliments WHERE pathOrUrl = ? LIMIT 1',
+    final Database db = await getDatabase;
+    final List<Map<String, dynamic>> queryResult = await db.rawQuery(
+      'SELECT COUNT(*) as count FROM aliments WHERE pathOrUrl = ?',
       [path],
     );
-    return result.isNotEmpty;
+    final count =
+        queryResult.isNotEmpty ? queryResult.first['count'] as int? ?? 0 : 0;
+    return count > 0;
   }
 }
