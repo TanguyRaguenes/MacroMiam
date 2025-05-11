@@ -17,8 +17,6 @@ class AddAlimentScreen extends StatefulWidget {
 }
 
 class _AddAlimentScreenState extends State<AddAlimentScreen> {
-  late final AlimentVm alimentVm;
-  late final AlimentModel? alimentModel;
   final _formKey = GlobalKey<FormState>();
 
   String? _name;
@@ -30,14 +28,10 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
   XFile? _cacheImage;
 
   @override
-  void initState() {
-    super.initState();
-    alimentVm = context.read<AlimentVm>();
-    alimentModel = alimentVm.getAlimentModel();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final AlimentVm alimentVm = context.read<AlimentVm>();
+    final AlimentModel? alimentModel = alimentVm.getAlimentModel();
+    _pathOrUrl = alimentModel?.pathOrUrl;
     final ListVm listVm = context.read<ListVm>();
 
     List<TextFormFieldModel> inputs = [
@@ -104,7 +98,7 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
           pathOrUrl: _pathOrUrl,
         );
 
-        listVm.getAliments();
+        listVm.fetchAliments();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Food item added'),

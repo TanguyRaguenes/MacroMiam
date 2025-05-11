@@ -16,21 +16,11 @@ class ListWidget extends StatefulWidget {
 
 class _ListWidgetState extends State<ListWidget> {
   @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      getAliments();
-    });
-  }
-
-  Future<void> getAliments() async {
-    context.read<ListVm>().getAliments();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final listViewModel = context.watch<ListVm>();
-    final aliments = listViewModel.aliments;
+    final listVm = context.watch<ListVm>();
+    final aliments = listVm.aliments;
+    listVm.fetchAliments();
+
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         final maxHeight = constraints.maxHeight;
@@ -43,7 +33,7 @@ class _ListWidgetState extends State<ListWidget> {
                 hintText: 'Search',
               ),
               onChanged: (value) {
-                listViewModel.filterList(value);
+                listVm.filterList(value);
               },
             ),
             if (aliments.isEmpty)
@@ -157,7 +147,7 @@ class _ListWidgetState extends State<ListWidget> {
                                         icon: Icon(Icons.delete),
                                         onPressed:
                                             () => {
-                                              listViewModel.deleteAliment(
+                                              listVm.deleteAliment(
                                                 id: aliments[index].id!,
                                                 pathOrUrl:
                                                     aliments[index].pathOrUrl,

@@ -20,7 +20,7 @@ class ImageService {
 
     final File persistentImage = await File(cacheImage.path).copy(newPath);
 
-    await File(cacheImage.path).delete();
+    // await File(cacheImage.path).delete();
 
     return persistentImage;
   }

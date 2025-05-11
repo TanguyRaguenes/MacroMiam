@@ -14,6 +14,8 @@ class AlimentVm extends ChangeNotifier {
   final AlimentRepository alimentRepository;
   final ApiService apiService;
   final ImageService imageService;
+  File? persistentImage;
+  XFile? previousCacheImage;
 
   AlimentVm({
     required this.alimentRepository,
@@ -53,14 +55,10 @@ class AlimentVm extends ChangeNotifier {
     required XFile? cacheImage,
     required String? pathOrUrl,
   }) async {
-    File? persistentImage;
-    if (cacheImage != null && await File(cacheImage.path).exists()) {
+    if (cacheImage != null && cacheImage != previousCacheImage) {
+      previousCacheImage = cacheImage;
       persistentImage = await imageService.saveImage(cacheImage: cacheImage);
-      if (pathOrUrl != null) {
-        await imageService.deleteImage(pathOrUrl: pathOrUrl);
-      }
       await imageService.clearCache();
-      //_alimentApiModel.pathOrUrl = persistentImage.path;
     }
 
     final aliment = AlimentModel(
@@ -74,6 +72,10 @@ class AlimentVm extends ChangeNotifier {
     );
 
     await alimentRepository.saveAliment(aliment);
+
+    if (pathOrUrl != null) {
+      await imageService.deleteImage(pathOrUrl: pathOrUrl);
+    }
   }
 
   Future<AlimentApiModel?> fetchData({required String barcode}) async {

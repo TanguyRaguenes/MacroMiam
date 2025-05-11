@@ -19,13 +19,13 @@ class _AlimentScreenState extends State<AlimentScreen> {
     final AlimentApiModel? alimentToDisplay = alimentVm.getAlimentApiModel();
 
     final Map<String, dynamic> alimentToSave = {
-      'name': alimentToDisplay!.productName ?? '',
-      'proteins': alimentToDisplay.nutriments!['proteins_100g'] ?? 0.0,
+      'name': alimentToDisplay?.productName ?? '',
+      'proteins': alimentToDisplay?.nutriments?['proteins_100g'] ?? 0.0,
       'carbohydrates':
-          alimentToDisplay.nutriments!['carbohydrates_100g'] ?? 0.0,
-      'fat': alimentToDisplay.nutriments!['fat_100g'] ?? 0.0,
-      'calories': alimentToDisplay.nutriments!['energy-kcal_100g'] ?? 0.0,
-      'pathOrUrl': alimentToDisplay.imageFrontUrl,
+          alimentToDisplay?.nutriments?['carbohydrates_100g'] ?? 0.0,
+      'fat': alimentToDisplay?.nutriments?['fat_100g'] ?? 0.0,
+      'calories': alimentToDisplay?.nutriments?['energy-kcal_100g'] ?? 0.0,
+      'pathOrUrl': alimentToDisplay?.imageFrontUrl,
     };
 
     final Map<String, dynamic> nutrimentItems = {
@@ -123,7 +123,7 @@ class _AlimentScreenState extends State<AlimentScreen> {
                               child: TextField(
                                 controller: TextEditingController(
                                   text:
-                                      '${alimentToDisplay.nutriments![nutrimentItem.value['keyword']]}',
+                                      '${alimentToDisplay?.nutriments?[nutrimentItem.value['keyword']]}',
                                 ),
                                 decoration: InputDecoration(
                                   filled: true,
@@ -159,7 +159,7 @@ class _AlimentScreenState extends State<AlimentScreen> {
                         onImageChosen: (cacheImage) {
                           alimentToSave['cacheImage'] = cacheImage;
                         },
-                        pathOrUrl: alimentToDisplay.imageFrontUrl,
+                        pathOrUrl: alimentToDisplay?.imageFrontUrl,
                       ),
                     ),
                   ),

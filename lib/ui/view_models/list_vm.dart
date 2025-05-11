@@ -14,7 +14,7 @@ class ListVm extends ChangeNotifier {
 
   List<AlimentModel> get aliments => _aliments;
 
-  Future<void> getAliments() async {
+  Future<void> fetchAliments() async {
     final List<Map<String, dynamic>> maps =
         await alimentRepository.getAliments();
     _alimentsBackup = List.generate(maps.length, (i) {
@@ -32,7 +32,7 @@ class ListVm extends ChangeNotifier {
     if (pathOrUrl != null) {
       await imageService.deleteImage(pathOrUrl: pathOrUrl);
     }
-    await getAliments();
+    await fetchAliments();
   }
 
   Future<void> filterList(String input) async {
