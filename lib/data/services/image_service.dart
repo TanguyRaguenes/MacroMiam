@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:macromiam/data/services/sqlite_db_service.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
@@ -13,16 +14,35 @@ class ImageService {
   Future<File> saveImage({required XFile cacheImage}) async {
     final directory = await getApplicationDocumentsDirectory();
 
+    XFile compressedCacheImage = await compressImage(cacheImage);
+
     final String fileName =
-        'macromiam_${DateTime.now().millisecondsSinceEpoch}.jpg';
+        'macromiam_${DateTime.now().millisecondsSinceEpoch}.webp';
 
     final String newPath = path.join(directory.path, fileName);
 
-    final File persistentImage = await File(cacheImage.path).copy(newPath);
-
-    // await File(cacheImage.path).delete();
+    final File persistentImage = await File(
+      compressedCacheImage.path,
+    ).copy(newPath);
 
     return persistentImage;
+  }
+
+  Future<XFile> compressImage(XFile image) async {
+    final targetPath = '${image.path}_compressed.webp';
+
+    final compressedFile = await FlutterImageCompress.compressAndGetFile(
+      image.path,
+      targetPath,
+      format: CompressFormat.webp,
+      quality: 30,
+    );
+
+    if (compressedFile == null) {
+      throw Exception("Error when trying to compress image");
+    }
+
+    return compressedFile;
   }
 
   Future<void> deleteImage({required String pathOrUrl}) async {
