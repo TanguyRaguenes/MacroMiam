@@ -1,13 +1,11 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:macromiam/data/models/textformfield_model.dart';
 import 'package:macromiam/ui/view_models/aliment_vm.dart';
-import 'package:macromiam/ui/views/widgets/choose_image_widget.dart';
 import 'package:provider/provider.dart';
-
 import '../../../data/models/aliment_model.dart';
 import '../../view_models/list_vm.dart';
+import '../widgets/image_picker_widget.dart';
 
 class AddAlimentScreen extends StatefulWidget {
   const AddAlimentScreen({super.key});
@@ -24,14 +22,14 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
   String? _carbohydrates;
   String? _fat;
   String? _calories;
-  String? _pathOrUrl;
+  String? _imageSource;
   XFile? _cacheImage;
 
   @override
   Widget build(BuildContext context) {
     final AlimentVm alimentVm = context.read<AlimentVm>();
     final AlimentModel? alimentModel = alimentVm.getAlimentModel();
-    _pathOrUrl = alimentModel?.pathOrUrl;
+    _imageSource = alimentModel?.imageSource;
     final ListVm listVm = context.read<ListVm>();
 
     List<TextFormFieldModel> inputs = [
@@ -95,7 +93,7 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
           fat: _fat!,
           calories: _calories!,
           cacheImage: _cacheImage,
-          pathOrUrl: _pathOrUrl,
+          imageSource: _imageSource,
         );
 
         listVm.fetchAliments();
@@ -113,7 +111,7 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
-          'Manually add a new aliment',
+          'Manually add a new food item',
           style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
         ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -158,14 +156,13 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
                     ),
                   ),
                   Expanded(
-                    child: ChooseImageWidget(
-                      onImageChosen: (cacheImage) {
+                    child: ImagePickerWidget(
+                      onImageSelected: (cacheImage) {
                         _cacheImage = cacheImage;
                       },
-                      pathOrUrl: alimentModel?.pathOrUrl,
+                      imageSource: alimentModel?.imageSource,
                     ),
                   ),
-
                   SizedBox(
                     width: maxWidth * 0.95,
                     child: ElevatedButton(

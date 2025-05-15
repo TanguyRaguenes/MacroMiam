@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:macromiam/data/models/aliment_api_model.dart';
-import 'package:macromiam/ui/views/widgets/choose_image_widget.dart';
+import 'package:macromiam/ui/views/widgets/image_picker_widget.dart';
 import 'package:provider/provider.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../view_models/aliment_vm.dart';
@@ -25,7 +25,7 @@ class _AlimentScreenState extends State<AlimentScreen> {
           alimentToDisplay?.nutriments?['carbohydrates_100g'] ?? 0.0,
       'fat': alimentToDisplay?.nutriments?['fat_100g'] ?? 0.0,
       'calories': alimentToDisplay?.nutriments?['energy-kcal_100g'] ?? 0.0,
-      'pathOrUrl': alimentToDisplay?.imageFrontUrl,
+      'imageSource': alimentToDisplay?.imageFrontUrl,
     };
 
     final Map<String, dynamic> nutrimentItems = {
@@ -75,7 +75,8 @@ class _AlimentScreenState extends State<AlimentScreen> {
                       child: TextField(
                         decoration: InputDecoration(
                           filled: true,
-                          fillColor: Colors.grey.shade200,
+                          fillColor:
+                              Theme.of(context).colorScheme.primaryContainer,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -127,7 +128,10 @@ class _AlimentScreenState extends State<AlimentScreen> {
                                 ),
                                 decoration: InputDecoration(
                                   filled: true,
-                                  fillColor: Colors.grey.shade200,
+                                  fillColor:
+                                      Theme.of(
+                                        context,
+                                      ).colorScheme.primaryContainer,
                                   border: OutlineInputBorder(),
                                   isDense: true,
                                   contentPadding: EdgeInsets.symmetric(
@@ -155,11 +159,11 @@ class _AlimentScreenState extends State<AlimentScreen> {
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ChooseImageWidget(
-                        onImageChosen: (cacheImage) {
+                      child: ImagePickerWidget(
+                        onImageSelected: (cacheImage) {
                           alimentToSave['cacheImage'] = cacheImage;
                         },
-                        pathOrUrl: alimentToDisplay?.imageFrontUrl,
+                        imageSource: alimentToDisplay?.imageFrontUrl,
                       ),
                     ),
                   ),
@@ -176,7 +180,7 @@ class _AlimentScreenState extends State<AlimentScreen> {
                           fat: alimentToSave['fat'].toString(),
                           calories: alimentToSave['calories'].toString(),
                           cacheImage: alimentToSave['cacheImage'],
-                          pathOrUrl: alimentToSave['pathOrUrl'],
+                          imageSource: alimentToSave['imageSource'],
                         );
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

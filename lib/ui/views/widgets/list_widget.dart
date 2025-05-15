@@ -78,17 +78,18 @@ class _ListWidgetState extends State<ListWidget> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
                                     child:
-                                        aliments[index].pathOrUrl != null
-                                            ? aliments[index].pathOrUrl!
+                                        aliments[index].imageSource != null
+                                            ? aliments[index].imageSource!
                                                         .substring(0, 4) ==
                                                     'http'
                                                 ? Image.network(
-                                                  aliments[index].pathOrUrl!,
+                                                  aliments[index].imageSource!,
                                                 )
                                                 : Image.file(
                                                   fit: BoxFit.cover,
                                                   File(
-                                                    aliments[index].pathOrUrl!,
+                                                    aliments[index]
+                                                        .imageSource!,
                                                   ),
                                                 )
                                             : SvgPicture.asset(
@@ -149,8 +150,8 @@ class _ListWidgetState extends State<ListWidget> {
                                             () => {
                                               listVm.deleteAliment(
                                                 id: aliments[index].id!,
-                                                pathOrUrl:
-                                                    aliments[index].pathOrUrl,
+                                                imageSource:
+                                                    aliments[index].imageSource,
                                               ),
                                               ScaffoldMessenger.of(
                                                 context,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:macromiam/data/services/api_service.dart';
-import 'package:macromiam/data/services/file_picker_service.dart';
 import 'package:macromiam/data/services/image_service.dart';
 import 'package:macromiam/providers/theme_provider.dart';
 import 'package:macromiam/ui/views/screens/aliment_screen.dart';
@@ -26,7 +25,6 @@ void main() {
       providers: [
         Provider(create: (_) => ApiService()),
         Provider(create: (_) => SqliteDbService()),
-        Provider(create: (_) => FilePickerService()),
 
         Provider(
           create:
@@ -90,7 +88,7 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.orange.shade300,
+          seedColor: Colors.pink.shade300,
           brightness: Brightness.dark,
         ),
       ),

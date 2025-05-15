@@ -26,7 +26,7 @@ class AlimentRepository {
 
   Future<void> deleteAliment({
     required int id,
-    required String? pathOrUrl,
+    required String? imageSource,
   }) async {
     await _sqliteDbService.deleteAliment(id);
   }

@@ -5,7 +5,7 @@ class AlimentModel {
   final double carbohydrates;
   final double fat;
   final double calories;
-  final String? pathOrUrl;
+  final String? imageSource;
 
   AlimentModel({
     this.id,
@@ -14,7 +14,7 @@ class AlimentModel {
     required this.carbohydrates,
     required this.fat,
     required this.calories,
-    required this.pathOrUrl,
+    required this.imageSource,
   });
 
   Map<String, Object?> toMap() {
@@ -25,7 +25,7 @@ class AlimentModel {
       'carbohydrates': carbohydrates,
       'fat': fat,
       'calories': calories,
-      'pathOrUrl': pathOrUrl,
+      'imageSource': imageSource,
     };
   }
 
@@ -37,7 +37,7 @@ class AlimentModel {
       carbohydrates: aliment['carbohydrates'],
       fat: aliment['fat'],
       calories: aliment['calories'],
-      pathOrUrl: aliment['pathOrUrl'],
+      imageSource: aliment['imageSource'],
     );
   }
 
@@ -47,7 +47,7 @@ class AlimentModel {
     required double carbohydrates,
     required double fat,
     required double calories,
-    required String? pathOrUrl,
+    required String? imageSource,
   }) {
     return AlimentModel(
       name: name,
@@ -55,12 +55,12 @@ class AlimentModel {
       carbohydrates: carbohydrates,
       fat: fat,
       calories: calories,
-      pathOrUrl: pathOrUrl,
+      imageSource: imageSource,
     );
   }
 
   @override
   String toString() {
-    return 'CustomAlimentModel{id: $id, name: $name, protein: $proteins, carbohydrates: $carbohydrates, fat: $fat, calories: $calories, pathOrUrl: $pathOrUrl}';
+    return 'CustomAlimentModel{id: $id, name: $name, protein: $proteins, carbohydrates: $carbohydrates, fat: $fat, calories: $calories, imageSource: $imageSource}';
   }
 }

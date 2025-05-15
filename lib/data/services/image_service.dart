@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:camera/camera.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:macromiam/data/services/sqlite_db_service.dart';
 import 'package:path/path.dart' as path;
@@ -45,18 +44,18 @@ class ImageService {
     return compressedFile;
   }
 
-  Future<void> deleteImage({required String pathOrUrl}) async {
-    if (!pathOrUrl.contains('no_image_placeholder') &&
-        pathOrUrl.substring(0, 4) != 'http') {
-      bool isPathUsed = await sqliteDbService.isPathUsed(path: pathOrUrl);
+  Future<void> deleteImage({required String imageSource}) async {
+    if (!imageSource.contains('no_image_placeholder') &&
+        imageSource.substring(0, 4) != 'http') {
+      bool isPathUsed = await sqliteDbService.isPathUsed(path: imageSource);
       if (!isPathUsed) {
-        if (pathOrUrl.contains('file_picker')) {
-          final Directory directory = Directory(path.dirname(pathOrUrl));
+        if (imageSource.contains('file_picker')) {
+          final Directory directory = Directory(path.dirname(imageSource));
           if (await directory.exists()) {
             await directory.delete(recursive: true);
           }
         } else {
-          final File file = File(pathOrUrl);
+          final File file = File(imageSource);
           if (await file.exists()) {
             await file.delete();
           }

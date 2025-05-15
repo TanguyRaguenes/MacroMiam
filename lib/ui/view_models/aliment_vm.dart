@@ -1,12 +1,10 @@
 import 'dart:io';
-
-import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:macromiam/data/models/aliment_api_model.dart';
 import 'package:macromiam/data/services/api_service.dart';
 import 'package:macromiam/data/services/image_service.dart';
-import 'package:path/path.dart';
 import '../../data/repositories/aliment_repository.dart';
 import '../../data/models/aliment_model.dart';
 
@@ -53,12 +51,16 @@ class AlimentVm extends ChangeNotifier {
     required String fat,
     required String calories,
     required XFile? cacheImage,
-    required String? pathOrUrl,
+    required String? imageSource,
   }) async {
-    if (cacheImage != null && cacheImage != previousCacheImage) {
-      previousCacheImage = cacheImage;
-      persistentImage = await imageService.saveImage(cacheImage: cacheImage);
-      await imageService.clearCache();
+    if (cacheImage != null) {
+      if (cacheImage != previousCacheImage) {
+        previousCacheImage = cacheImage;
+        persistentImage = await imageService.saveImage(cacheImage: cacheImage);
+        await imageService.clearCache();
+      }
+    } else {
+      persistentImage = null;
     }
 
     final aliment = AlimentModel(
@@ -68,13 +70,13 @@ class AlimentVm extends ChangeNotifier {
       carbohydrates: double.tryParse(carbohydrates) ?? 0.0,
       fat: double.tryParse(fat) ?? 0.0,
       calories: double.tryParse(calories) ?? 0.0,
-      pathOrUrl: persistentImage?.path ?? pathOrUrl,
+      imageSource: persistentImage?.path ?? imageSource,
     );
 
     await alimentRepository.saveAliment(aliment);
 
-    if (pathOrUrl != null) {
-      await imageService.deleteImage(pathOrUrl: pathOrUrl);
+    if (imageSource != null) {
+      await imageService.deleteImage(imageSource: imageSource);
     }
   }
 

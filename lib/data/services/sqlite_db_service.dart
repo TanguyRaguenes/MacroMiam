@@ -22,7 +22,7 @@ class SqliteDbService {
       path,
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE aliments(id INTEGER PRIMARY KEY AUTOINCREMENT, name text, proteins double, carbohydrates double, fat double, calories double, pathOrUrl String)',
+          'CREATE TABLE aliments(id INTEGER PRIMARY KEY AUTOINCREMENT, name text, proteins double, carbohydrates double, fat double, calories double, imageSource String)',
         );
       },
       version: 1,
@@ -41,14 +41,14 @@ class SqliteDbService {
     print('updateAliment :');
     print(aliment.toString());
     db.rawUpdate(
-      'UPDATE aliments SET name=?, proteins=?,carbohydrates=?,fat=?,calories=?,pathOrUrl=? WHERE id=?',
+      'UPDATE aliments SET name=?, proteins=?,carbohydrates=?,fat=?,calories=?,imageSource=? WHERE id=?',
       [
         aliment.name,
         aliment.proteins,
         aliment.carbohydrates,
         aliment.fat,
         aliment.calories,
-        aliment.pathOrUrl,
+        aliment.imageSource,
         aliment.id,
       ],
     );
@@ -68,7 +68,7 @@ class SqliteDbService {
   Future<bool> isPathUsed({required String path}) async {
     final Database db = await getDatabase;
     final List<Map<String, dynamic>> queryResult = await db.rawQuery(
-      'SELECT COUNT(*) as count FROM aliments WHERE pathOrUrl = ?',
+      'SELECT COUNT(*) as count FROM aliments WHERE imageSource = ?',
       [path],
     );
     final count =

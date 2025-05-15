@@ -26,11 +26,11 @@ class ListVm extends ChangeNotifier {
 
   Future<void> deleteAliment({
     required int id,
-    required String? pathOrUrl,
+    required String? imageSource,
   }) async {
-    await alimentRepository.deleteAliment(id: id, pathOrUrl: pathOrUrl);
-    if (pathOrUrl != null) {
-      await imageService.deleteImage(pathOrUrl: pathOrUrl);
+    await alimentRepository.deleteAliment(id: id, imageSource: imageSource);
+    if (imageSource != null) {
+      await imageService.deleteImage(imageSource: imageSource);
     }
     await fetchAliments();
   }
