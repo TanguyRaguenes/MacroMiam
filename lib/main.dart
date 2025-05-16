@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:macromiam/data/services/api_service.dart';
 import 'package:macromiam/data/services/image_service.dart';
 import 'package:macromiam/providers/theme_provider.dart';
@@ -20,6 +21,8 @@ import 'l10n/app_localizations.dart';
 import 'providers/locale_provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   runApp(
     MultiProvider(
       providers: [
