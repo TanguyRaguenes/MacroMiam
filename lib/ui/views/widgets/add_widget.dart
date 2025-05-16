@@ -7,7 +7,8 @@ import '../../../data/models/aliment_api_model.dart';
 import 'banner_pub_widget.dart';
 
 class AddWidget extends StatefulWidget {
-  const AddWidget({super.key});
+  final double maxWidth;
+  const AddWidget({super.key, required this.maxWidth});
 
   @override
   State<AddWidget> createState() => _AddWidgetState();
@@ -24,10 +25,12 @@ class _AddWidgetState extends State<AddWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final double maxWidth = widget.maxWidth;
     final BarcodeScannerService barcodeScannerWidget = BarcodeScannerService();
     final AlimentVm alimentVm = context.read<AlimentVm>();
     return Container(
       color: Theme.of(context).colorScheme.primaryContainer,
+      width: maxWidth,
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           final maxWidth = constraints.maxWidth;
@@ -105,7 +108,6 @@ class _AddWidgetState extends State<AddWidget> {
                   },
                 ),
               ),
-              BannerPubWidget(),
             ],
           );
         },

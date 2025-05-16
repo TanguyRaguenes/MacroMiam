@@ -32,6 +32,10 @@ class _BannerPubWidgetState extends State<BannerPubWidget> {
       ? 'ca-app-pub-3940256099942544/6300978111'
       : 'ca-app-pub-3940256099942544/2934735716';
 
+  // final adUnitId = Platform.isAndroid
+  //     ? 'ca-app-pub-7057293978116846/9364409570'
+  //     : 'ca-app-pub-7057293978116846/9732893476';
+
   /// Loads a banner ad.
   void loadAd() async {
     // Get an AnchoredAdaptiveBannerAdSize before loading the ad.

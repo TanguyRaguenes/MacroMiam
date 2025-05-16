@@ -5,6 +5,7 @@ import 'package:macromiam/data/services/image_service.dart';
 import 'package:macromiam/providers/theme_provider.dart';
 import 'package:macromiam/ui/views/screens/aliment_screen.dart';
 import 'package:macromiam/ui/views/screens/language_screen.dart';
+import 'package:macromiam/ui/views/widgets/Banner_pub_widget.dart';
 import 'package:macromiam/ui/views/widgets/drawer_widget.dart';
 import 'ui/view_models/list_vm.dart';
 import 'data/services/sqlite_db_service.dart';
@@ -22,6 +23,10 @@ import 'providers/locale_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  final config = RequestConfiguration(
+    testDeviceIds: ['1259D4F82A884EF735E366CAE834ABAF'],
+  );
+  MobileAds.instance.updateRequestConfiguration(config);
   MobileAds.instance.initialize();
   runApp(
     MultiProvider(
@@ -119,7 +124,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   var index = 0;
 
-  final List<Widget> _widgets = [AddWidget(), ListWidget(), StatsWidget()];
+  // final List<Widget> _widgets = [AddWidget(), ListWidget(), StatsWidget()];
+
+  final List<Widget Function(double)> _widgets = [
+        (maxWidth) => AddWidget(maxWidth: maxWidth),
+        (maxWidth) => ListWidget(maxWidth: maxWidth),
+        (maxWidth) => StatsWidget(maxWidth: maxWidth),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +193,22 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
 
-      body: SizedBox.expand(child: _widgets[index]),
+      body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+        final maxWidth = constraints.maxWidth;
+        final maxHeight = constraints.maxHeight;
+        return SizedBox(
+          width: maxWidth,
+          height: maxHeight,
+          child: Column(
+            children: [
+
+              Expanded(child: _widgets[index](maxWidth)),
+              BannerPubWidget(),
+            ],
+          ),
+        );
+      }),
+      // child: SizedBox.expand(child: _widgets[index])),
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: index,
