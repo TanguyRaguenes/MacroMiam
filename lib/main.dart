@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:macromiam/data/models/consumption_model.dart';
 import 'package:macromiam/data/services/api_service.dart';
 import 'package:macromiam/data/services/image_service.dart';
 import 'package:macromiam/providers/theme_provider.dart';
+import 'package:macromiam/ui/views/screens/add_consumption_screen.dart';
 import 'package:macromiam/ui/views/screens/aliment_screen.dart';
 import 'package:macromiam/ui/views/screens/language_screen.dart';
 import 'package:macromiam/ui/views/widgets/Banner_pub_widget.dart';
+import 'package:macromiam/ui/views/widgets/consumption_widget.dart';
 import 'package:macromiam/ui/views/widgets/drawer_widget.dart';
 import 'ui/view_models/list_vm.dart';
 import 'data/services/sqlite_db_service.dart';
@@ -81,11 +84,24 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       locale: context.watch<LocaleProvider>().locale,
       initialRoute: '/',
+      onGenerateRoute: (settings) {
+        if (settings.name == '/addConsumption') {
+          final ConsumptionModel consumption =
+              settings.arguments as ConsumptionModel;
+          return MaterialPageRoute(
+            builder:
+                (context) => AddConsumptionScreen(consumption: consumption),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (BuildContext context) => MyHomePage(title: 'MacroMiam 🍽️'),
+        );
+      },
       routes: {
-        '/': (context) => MyHomePage(title: 'MacroMiam 🍽️'),
-        '/addAliment': (context) => AddAlimentScreen(),
-        '/language': (context) => LanguageScreen(),
-        '/aliment': (context) => AlimentScreen(),
+        '/': (BuildContext context) => MyHomePage(title: 'MacroMiam 🍽️'),
+        '/addAliment': (BuildContext context) => AddAlimentScreen(),
+        '/language': (BuildContext context) => LanguageScreen(),
+        '/aliment': (BuildContext context) => AlimentScreen(),
       },
       title: 'MacroMiam 🍽️',
       theme: ThemeData(
@@ -127,9 +143,10 @@ class _MyHomePageState extends State<MyHomePage> {
   // final List<Widget> _widgets = [AddWidget(), ListWidget(), StatsWidget()];
 
   final List<Widget Function(double)> _widgets = [
-        (maxWidth) => AddWidget(maxWidth: maxWidth),
-        (maxWidth) => ListWidget(maxWidth: maxWidth),
-        (maxWidth) => StatsWidget(maxWidth: maxWidth),
+    (maxWidth) => AddWidget(maxWidth: maxWidth),
+    (maxWidth) => ListWidget(maxWidth: maxWidth),
+    (maxWidth) => StatsWidget(maxWidth: maxWidth),
+    (maxWidth) => ConsumptionWidget(maxWidth: maxWidth),
   ];
 
   @override
@@ -193,24 +210,25 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
 
-      body: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-        final maxWidth = constraints.maxWidth;
-        final maxHeight = constraints.maxHeight;
-        return SizedBox(
-          width: maxWidth,
-          height: maxHeight,
-          child: Column(
-            children: [
-
-              Expanded(child: _widgets[index](maxWidth)),
-              BannerPubWidget(),
-            ],
-          ),
-        );
-      }),
-      // child: SizedBox.expand(child: _widgets[index])),
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          final maxWidth = constraints.maxWidth;
+          final maxHeight = constraints.maxHeight;
+          return SizedBox(
+            width: maxWidth,
+            height: maxHeight,
+            child: Column(
+              children: [
+                Expanded(child: _widgets[index](maxWidth)),
+                BannerPubWidget(),
+              ],
+            ),
+          );
+        },
+      ),
 
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: index,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         selectedItemColor: Theme.of(context).colorScheme.onPrimary,
@@ -229,6 +247,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.percent_outlined),
             label: '',
           ),
+          BottomNavigationBarItem(icon: Icon(Icons.ac_unit), label: ''),
         ],
       ),
     );

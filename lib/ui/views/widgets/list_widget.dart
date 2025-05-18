@@ -9,6 +9,7 @@ import '../../view_models/aliment_vm.dart';
 
 class ListWidget extends StatefulWidget {
   final double maxWidth;
+
   const ListWidget({super.key, required this.maxWidth});
 
   @override
@@ -16,11 +17,22 @@ class ListWidget extends StatefulWidget {
 }
 
 class _ListWidgetState extends State<ListWidget> {
+  bool _isFetchAlimentsDone = false;
+
+  @override
+  void dispose() {
+    _isFetchAlimentsDone = false;
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final listVm = context.watch<ListVm>();
+    final ListVm listVm = context.watch<ListVm>();
+    if (!_isFetchAlimentsDone) {
+      listVm.fetchAliments();
+      _isFetchAlimentsDone = true;
+    }
     final aliments = listVm.aliments;
-    listVm.fetchAliments();
     return Column(
       children: [
         TextField(
@@ -65,7 +77,7 @@ class _ListWidgetState extends State<ListWidget> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Flexible(
                             flex: 3,
@@ -84,8 +96,7 @@ class _ListWidgetState extends State<ListWidget> {
                                             : Image.file(
                                               fit: BoxFit.cover,
                                               File(
-                                                aliments[index]
-                                                    .imageSource!,
+                                                aliments[index].imageSource!,
                                               ),
                                             )
                                         : SvgPicture.asset(
@@ -106,13 +117,9 @@ class _ListWidgetState extends State<ListWidget> {
                                 Text(
                                   aliments[index].name,
                                   style:
-                                      Theme.of(
-                                        context,
-                                      ).textTheme.titleMedium,
+                                      Theme.of(context).textTheme.titleMedium,
                                 ),
-                                Text(
-                                  'Proteins: ${aliments[index].proteins} g',
-                                ),
+                                Text('Proteins: ${aliments[index].proteins} g'),
                                 Text(
                                   'Carbohydrates: ${aliments[index].carbohydrates} g',
                                 ),
@@ -133,13 +140,6 @@ class _ListWidgetState extends State<ListWidget> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  IconButton(
-                                    icon: Icon(Icons.add),
-                                    onPressed:
-                                        () => print(
-                                          'Ajouter ${aliments[index].name}',
-                                        ),
-                                  ),
                                   IconButton(
                                     icon: Icon(Icons.delete),
                                     onPressed:

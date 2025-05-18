@@ -108,6 +108,7 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
     }
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
@@ -122,58 +123,55 @@ class _AddAlimentScreenState extends State<AddAlimentScreen> {
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
             final maxWidth = constraints.maxWidth;
-            return Container(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              child: Column(
-                children: [
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        for (var input in inputs)
-                          TextFormField(
-                            decoration: InputDecoration(
-                              labelText: input.label,
-                              hintText: input.hintText,
-                              prefixIcon:
-                                  input.image != null
-                                      ? Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Image.asset(
-                                          input.image!,
-                                          width: 24,
-                                          height: 24,
-                                        ),
-                                      )
-                                      : null,
-                            ),
-                            keyboardType: input.type,
-                            validator: validator,
-                            onSaved: input.onSaved,
-                            initialValue: input.initialValue,
+            return Column(
+              children: [
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      for (var input in inputs)
+                        TextFormField(
+                          decoration: InputDecoration(
+                            labelText: input.label,
+                            hintText: input.hintText,
+                            prefixIcon:
+                                input.image != null
+                                    ? Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Image.asset(
+                                        input.image!,
+                                        width: 24,
+                                        height: 24,
+                                      ),
+                                    )
+                                    : null,
                           ),
-                      ],
-                    ),
+                          keyboardType: input.type,
+                          validator: validator,
+                          onSaved: input.onSaved,
+                          initialValue: input.initialValue,
+                        ),
+                    ],
                   ),
-                  Expanded(
-                    child: ImagePickerWidget(
-                      onImageSelected: (cacheImage) {
-                        _cacheImage = cacheImage;
-                      },
-                      imageSource: alimentModel?.imageSource,
-                    ),
+                ),
+                Expanded(
+                  child: ImagePickerWidget(
+                    onImageSelected: (cacheImage) {
+                      _cacheImage = cacheImage;
+                    },
+                    imageSource: alimentModel?.imageSource,
                   ),
-                  SizedBox(
-                    width: maxWidth * 0.95,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        submit();
-                      },
-                      child: Text('Add this food item to my list'),
-                    ),
+                ),
+                SizedBox(
+                  width: maxWidth * 0.95,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      submit();
+                    },
+                    child: Text('Add this food item to my list'),
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           },
         ),
