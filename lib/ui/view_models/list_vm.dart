@@ -38,7 +38,7 @@ class ListVm extends ChangeNotifier {
   Future<void> filterList(String input) async {
     List<AlimentModel> filteredList =
         _alimentsBackup
-            .where((aliment) => aliment.name.contains(input))
+            .where((aliment) => aliment.name.toUpperCase().contains(input.toUpperCase()))
             .toList();
     _aliments = List.from(filteredList);
     notifyListeners();

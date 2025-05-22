@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:macromiam/data/models/consumption_model.dart';
 import 'package:macromiam/data/models/enums_model.dart';
@@ -61,8 +63,6 @@ class _AddConsumptionScreenState extends State<AddConsumptionScreen> {
       ),
       body: Column(
         children: [
-          // Text(consumption.dayOfWeek.label),
-          // Text(consumption.mealType.label),
           TextField(
             keyboardType: TextInputType.number,
             controller: _quantityController,
@@ -71,25 +71,76 @@ class _AddConsumptionScreenState extends State<AddConsumptionScreen> {
           TextField(controller: _alimentController),
           ElevatedButton(
             onPressed: () async {
-              final AlimentModel? alimentSelected =
-                  await showModalBottomSheet<AlimentModel>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      List<AlimentModel> aliments = listVm.aliments;
-                      return ListView.builder(
-                        itemCount: aliments.length,
-                        itemBuilder: (context, index) {
-                          final aliment = aliments[index];
-                          return ListTile(
-                            title: Text(aliment.name),
-                            onTap: () {
-                              Navigator.pop(context, aliment);
-                            },
-                          );
-                        },
+              final List<AlimentModel> allAliments = listVm.aliments;
+              List<AlimentModel> filteredAliments = allAliments;
+              final TextEditingController filterController =
+                  TextEditingController();
+              final AlimentModel?
+              alimentSelected = await showModalBottomSheet<AlimentModel>(
+                context: context,
+                isScrollControlled: true,
+                builder: (BuildContext context) {
+                  return StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                      return SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: filterController,
+                              decoration: InputDecoration(
+                                prefixIcon: Icon(Icons.search),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  filteredAliments =
+                                      allAliments
+                                          .where(
+                                            (a) => a.name
+                                                .toUpperCase()
+                                                .contains(value.toUpperCase()),
+                                          )
+                                          .toList();
+                                });
+                              },
+                            ),
+                            Expanded(
+                              child: ListView.builder(
+                                // shrinkWrap: true,
+                                itemCount: filteredAliments.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return ListTile(
+                                    title: Text(filteredAliments[index].name),
+                                    subtitle: Text(
+                                      'Per 100g : ${filteredAliments[index].proteins} prot | ${filteredAliments[index].carbohydrates} carb | ${filteredAliments[index].fat} fat | ${filteredAliments[index].calories} Cal',
+                                    ),
+                                    leading:
+                                        filteredAliments[index].imageSource !=
+                                                null
+                                            ? Image.file(
+                                              File(
+                                                filteredAliments[index]
+                                                    .imageSource!,
+                                              ),
+                                            )
+                                            : null,
+                                    onTap: () {
+                                      Navigator.pop(
+                                        context,
+                                        filteredAliments[index],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     },
                   );
+                },
+              );
               if (alimentSelected != null) {
                 setState(() {
                   _alimentSelected = alimentSelected;

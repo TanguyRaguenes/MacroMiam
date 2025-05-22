@@ -18,6 +18,7 @@ class ListWidget extends StatefulWidget {
 
 class _ListWidgetState extends State<ListWidget> {
   bool _isFetchAlimentsDone = false;
+  TextEditingController filterController = TextEditingController();
 
   @override
   void dispose() {
@@ -36,6 +37,7 @@ class _ListWidgetState extends State<ListWidget> {
     return Column(
       children: [
         TextField(
+          controller: filterController,
           decoration: InputDecoration(
             suffixIcon: Icon(Icons.search),
             hintText: 'Search',
@@ -67,10 +69,11 @@ class _ListWidgetState extends State<ListWidget> {
               itemCount: aliments.length,
               itemBuilder: (BuildContext context, int index) {
                 return InkWell(
-                  onTap: () {
+                  onTap: () async {
                     final alimentVm = context.read<AlimentVm>();
                     alimentVm.setAlimentModel(aliments[index]);
-                    Navigator.pushNamed(context, '/addAliment');
+                    await Navigator.pushNamed(context, '/addAliment');
+                    listVm.fetchAliments();
                   },
                   child: Card(
                     margin: EdgeInsets.all(8.0),
