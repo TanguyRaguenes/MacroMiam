@@ -39,6 +39,17 @@ class _AddConsumptionScreenState extends State<AddConsumptionScreen> {
     super.dispose();
   }
 
+  // Gestion form
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  double? _quantityToSave;
+  AlimentModel? _alimentToSave;
+
+  String? _validateQuantity(){
+    if(_quantityToSave==null && _quantityToSave.isNumeric)
+  }
+
+  void _onSubmit() {}
+
   @override
   Widget build(BuildContext context) {
     final ListVm listVm = context.watch<ListVm>();
@@ -54,87 +65,157 @@ class _AddConsumptionScreenState extends State<AddConsumptionScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(consumption.dayOfWeek.label, style: TextStyle(fontSize: 20)),
-            Text(
-              consumption.mealType.label,
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-            ),
+            Text(consumption.mealType.label, style: TextStyle(fontSize: 12, color: Colors.grey)),
           ],
         ),
       ),
       body: Column(
         children: [
-          TextField(
-            keyboardType: TextInputType.number,
-            controller: _quantityController,
-            onChanged: (value) {},
+          Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                    onSaved: (value) {
+                  _quantityToSave=value as double?;
+                },
+                validator: _validateQuantity,),
+                TextFormField(),
+                ElevatedButton(
+                  onPressed: () {
+                    _onSubmit();
+                  },
+                  child: Text('Submit'),
+                ),
+              ],
+            ),
           ),
-          TextField(controller: _alimentController),
+          // TextField(
+          //   keyboardType: TextInputType.number,
+          //   controller: _quantityController,
+          //   onChanged: (value) {},
+          // ),
+          // TextField(controller: _alimentController),
           ElevatedButton(
             onPressed: () async {
               final List<AlimentModel> allAliments = listVm.aliments;
               List<AlimentModel> filteredAliments = allAliments;
-              final TextEditingController filterController =
-                  TextEditingController();
-              final AlimentModel?
-              alimentSelected = await showModalBottomSheet<AlimentModel>(
+              final AlimentModel? alimentSelected = await showModalBottomSheet<AlimentModel>(
+                backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                useSafeArea: true,
                 context: context,
                 isScrollControlled: true,
                 builder: (BuildContext context) {
                   return StatefulBuilder(
                     builder: (BuildContext context, StateSetter setState) {
-                      return SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.5,
-                        child: Column(
-                          children: [
-                            TextField(
-                              controller: filterController,
-                              decoration: InputDecoration(
-                                prefixIcon: Icon(Icons.search),
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  filteredAliments =
-                                      allAliments
-                                          .where(
-                                            (a) => a.name
-                                                .toUpperCase()
-                                                .contains(value.toUpperCase()),
-                                          )
-                                          .toList();
-                                });
-                              },
-                            ),
-                            Expanded(
-                              child: ListView.builder(
-                                // shrinkWrap: true,
-                                itemCount: filteredAliments.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return ListTile(
-                                    title: Text(filteredAliments[index].name),
-                                    subtitle: Text(
-                                      'Per 100g : ${filteredAliments[index].proteins} prot | ${filteredAliments[index].carbohydrates} carb | ${filteredAliments[index].fat} fat | ${filteredAliments[index].calories} Cal',
-                                    ),
-                                    leading:
-                                        filteredAliments[index].imageSource !=
-                                                null
-                                            ? Image.file(
-                                              File(
-                                                filteredAliments[index]
-                                                    .imageSource!,
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                        child: FractionallySizedBox(
+                          heightFactor: 0.6,
+                          child: Column(
+                            children: [
+                              TextField(
+                                decoration: InputDecoration(prefixIcon: Icon(Icons.search)),
+                                onChanged: (value) {
+                                  setState(() {
+                                    filteredAliments =
+                                        allAliments
+                                            .where(
+                                              (a) => a.name.toUpperCase().contains(
+                                                value.toUpperCase(),
                                               ),
                                             )
-                                            : null,
-                                    onTap: () {
-                                      Navigator.pop(
-                                        context,
-                                        filteredAliments[index],
-                                      );
-                                    },
-                                  );
+                                            .toList();
+                                  });
                                 },
                               ),
-                            ),
-                          ],
+                              Expanded(
+                                child: ListView.builder(
+                                  // shrinkWrap: true,
+                                  itemCount: filteredAliments.length,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return InkWell(
+                                      onTap: () {
+                                        Navigator.pop(context, filteredAliments[index]);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(20),
+                                            color: Theme.of(context).colorScheme.onInverseSurface,
+                                            // border: Border.all(color: Theme.of(context).colorScheme.inverseSurface),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              children: [
+                                                Flexible(
+                                                  flex: 1,
+                                                  child: AspectRatio(
+                                                    aspectRatio: 1,
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(8),
+                                                      child:
+                                                          filteredAliments[index].imageSource !=
+                                                                  null
+                                                              ? filteredAliments[index].imageSource!
+                                                                          .substring(0, 4) ==
+                                                                      'http'
+                                                                  ? Image.network(
+                                                                    filteredAliments[index]
+                                                                        .imageSource!,
+                                                                  )
+                                                                  : Image.file(
+                                                                    fit: BoxFit.cover,
+                                                                    File(
+                                                                      filteredAliments[index]
+                                                                          .imageSource!,
+                                                                    ),
+                                                                  )
+                                                              : Image.asset(
+                                                                'assets/images/no_image.png',
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 30),
+                                                Flexible(
+                                                  flex: 2,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        filteredAliments[index].name,
+                                                        style:
+                                                            Theme.of(context).textTheme.titleMedium,
+                                                      ),
+                                                      Text(
+                                                        'Proteins: ${filteredAliments[index].proteins} g',
+                                                      ),
+                                                      Text(
+                                                        'Carbohydrates: ${filteredAliments[index].carbohydrates} g',
+                                                      ),
+                                                      Text('Fat: ${filteredAliments[index].fat} g'),
+                                                      Text(
+                                                        'Calories: ${filteredAliments[index].calories} kcal',
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },

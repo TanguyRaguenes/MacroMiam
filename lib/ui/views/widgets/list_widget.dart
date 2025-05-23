@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:macromiam/ui/view_models/list_vm.dart';
 import 'package:provider/provider.dart';
 
@@ -102,8 +101,8 @@ class _ListWidgetState extends State<ListWidget> {
                                                 aliments[index].imageSource!,
                                               ),
                                             )
-                                        : SvgPicture.asset(
-                                          'assets/images/no_image_placeholder.svg',
+                                        : Image.asset(
+                                          'assets/images/no_image.png',
                                           fit: BoxFit.cover,
                                         ),
                               ),
