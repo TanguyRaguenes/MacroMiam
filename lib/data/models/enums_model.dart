@@ -13,6 +13,10 @@ extension MealTypeExtension on MealType {
         return 'Dîner';
     }
   }
+
+  static MealType fromLabel(String label) {
+    return MealType.values.firstWhere((e) => e.label == label);
+  }
 }
 
 enum DayOfWeek {
@@ -43,5 +47,9 @@ extension DayOfWeekExtension on DayOfWeek {
       case DayOfWeek.sunday:
         return 'Dimanche';
     }
+  }
+
+  static DayOfWeek fromLabel(String label) {
+    return DayOfWeek.values.firstWhere((e) => e.label == label);
   }
 }

@@ -1,23 +1,17 @@
-import 'package:macromiam/data/models/aliment_model.dart';
+import 'package:flutter/widgets.dart';
 import 'package:macromiam/data/models/consumption_model.dart';
+import 'package:macromiam/data/services/consumption_service.dart';
 
-import '../../data/models/enums_model.dart';
+class ConsumptionVm extends ChangeNotifier {
+  final ConsumptionService consumptionService;
 
-class ConsumptionVm {
-  Future<void> saveConsumption(
-    AlimentModel aliment,
-    double quantityInGrams,
-    DayOfWeek dayOfWeek,
-    MealType mealType,
-  ) async {
-    ConsumptionModel consumptionModel = ConsumptionModel(
-      aliment: aliment,
-      quantityInGrams: quantityInGrams,
-      mealType: mealType,
-      dayOfWeek: dayOfWeek,
-    );
-    print('///////////////////////////////////////////////////////');
-    print(consumptionModel.toString());
-    print('///////////////////////////////////////////////////////');
+  ConsumptionVm({required this.consumptionService});
+
+  Future<List<ConsumptionModel>> getConsumptions() async {
+    return await consumptionService.getConsumptions();
+  }
+
+  Future<void> saveConsumption({required ConsumptionModel consumption}) async {
+    consumptionService.saveConsumption(consumption: consumption);
   }
 }

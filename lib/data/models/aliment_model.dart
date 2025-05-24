@@ -29,36 +29,6 @@ class AlimentModel {
     };
   }
 
-  factory AlimentModel.fromMap(Map<String, dynamic> aliment) {
-    return AlimentModel(
-      id: aliment['id'],
-      name: aliment['name'],
-      proteins: aliment['proteins'],
-      carbohydrates: aliment['carbohydrates'],
-      fat: aliment['fat'],
-      calories: aliment['calories'],
-      imageSource: aliment['imageSource'],
-    );
-  }
-
-  factory AlimentModel.fromAlimentModelApi({
-    required String name,
-    required double proteins,
-    required double carbohydrates,
-    required double fat,
-    required double calories,
-    required String? imageSource,
-  }) {
-    return AlimentModel(
-      name: name,
-      proteins: proteins,
-      carbohydrates: carbohydrates,
-      fat: fat,
-      calories: calories,
-      imageSource: imageSource,
-    );
-  }
-
   @override
   String toString() {
     return 'CustomAlimentModel{id: $id, name: $name, protein: $proteins, carbohydrates: $carbohydrates, fat: $fat, calories: $calories, imageSource: $imageSource}';

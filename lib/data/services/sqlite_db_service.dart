@@ -1,4 +1,5 @@
 import 'package:macromiam/data/models/aliment_model.dart';
+import 'package:macromiam/data/models/consumption_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -20,9 +21,12 @@ class SqliteDbService {
     String path = join(await getDatabasesPath(), 'macroMiam.db');
     return await openDatabase(
       path,
-      onCreate: (db, version) {
-        return db.execute(
-          'CREATE TABLE aliments(id INTEGER PRIMARY KEY AUTOINCREMENT, name text, proteins double, carbohydrates double, fat double, calories double, imageSource String)',
+      onCreate: (db, version) async {
+        await db.execute(
+          'CREATE TABLE aliments(id INTEGER PRIMARY KEY AUTOINCREMENT, name text, proteins double, carbohydrates double, fat double, calories double, imageSource String);',
+        );
+        await db.execute(
+          'CREATE TABLE consumptions(id INTEGER PRIMARY KEY AUTOINCREMENT, alimentId integer, quantityInGrams double, mealType String, dayOfWeek String);',
         );
       },
       version: 1,
@@ -34,6 +38,13 @@ class SqliteDbService {
     print('insertAliment :');
     print(aliment.toString());
     db.insert('aliments', aliment.toMap());
+  }
+
+  Future<void> saveConsumption(ConsumptionModel consumption) async {
+    final Database db = await getDatabase;
+    print('insertConsumption :');
+    print(consumption.toString());
+    db.insert('consumptions', consumption.toMap());
   }
 
   Future<void> updateAliment(AlimentModel aliment) async {
@@ -57,6 +68,26 @@ class SqliteDbService {
   Future<List<Map<String, dynamic>>> getAliments() async {
     final Database db = await getDatabase;
     final List<Map<String, dynamic>> queryResult = await db.query('aliments');
+    return queryResult;
+  }
+
+  Future<Map<String, dynamic>?> getAlimentById({required int id}) async {
+    final Database db = await getDatabase;
+    final List<Map<String, dynamic>> result = await db.rawQuery(
+      'SELECT * FROM aliments WHERE id=?',
+      [id],
+    );
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+    return null;
+  }
+
+  Future<List<Map<String, dynamic>>> getConsumptions() async {
+    final Database db = await getDatabase;
+    final List<Map<String, dynamic>> queryResult = await db.query(
+      'consumptions',
+    );
     return queryResult;
   }
 

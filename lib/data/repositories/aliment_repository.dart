@@ -1,33 +1,34 @@
-import 'dart:io';
-
-import 'package:path/path.dart' as path;
-
 import '../models/aliment_model.dart';
 import '../services/sqlite_db_service.dart';
 
 class AlimentRepository {
-  AlimentRepository({required SqliteDbService sqliteDbService}) {
-    _sqliteDbService = sqliteDbService;
-  }
+  final SqliteDbService sqliteDbService;
 
-  late final SqliteDbService _sqliteDbService;
+  AlimentRepository({required this.sqliteDbService});
 
   Future<void> saveAliment(AlimentModel aliment) async {
     if (aliment.id == null) {
-      await _sqliteDbService.saveAliment(aliment);
+      await sqliteDbService.saveAliment(aliment);
     } else {
-      await _sqliteDbService.updateAliment(aliment);
+      await sqliteDbService.updateAliment(aliment);
     }
   }
 
   Future<List<Map<String, dynamic>>> getAliments() async {
-    return await _sqliteDbService.getAliments();
+    return await sqliteDbService.getAliments();
+  }
+
+  Future<Map<String, dynamic>?> getAlimentById({required int id}) async {
+    Map<String, dynamic>? alimentMap = await sqliteDbService.getAlimentById(
+      id: id,
+    );
+    return alimentMap;
   }
 
   Future<void> deleteAliment({
     required int id,
     required String? imageSource,
   }) async {
-    await _sqliteDbService.deleteAliment(id);
+    await sqliteDbService.deleteAliment(id);
   }
 }

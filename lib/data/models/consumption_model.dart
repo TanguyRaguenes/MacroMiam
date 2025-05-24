@@ -2,8 +2,8 @@ import 'aliment_model.dart';
 import 'enums_model.dart';
 
 class ConsumptionModel {
-  final AlimentModel? aliment;
-  final double quantityInGrams;
+  AlimentModel? aliment;
+  double quantityInGrams;
   MealType mealType;
   DayOfWeek dayOfWeek;
 
@@ -13,6 +13,15 @@ class ConsumptionModel {
     required this.mealType,
     required this.dayOfWeek,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      "alimentId": aliment!.id,
+      "quantityInGrams": quantityInGrams,
+      "mealType": mealType.label,
+      "dayOfWeek": dayOfWeek.label,
+    };
+  }
 
   @override
   String toString() {

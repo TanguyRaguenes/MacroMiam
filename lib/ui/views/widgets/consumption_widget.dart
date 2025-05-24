@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:macromiam/data/models/consumption_model.dart';
 import 'package:macromiam/data/models/enums_model.dart';
+import 'package:macromiam/ui/view_models/consumption_vm.dart';
+import 'package:provider/provider.dart';
 
 class ConsumptionWidget extends StatefulWidget {
   final double maxWidth;
@@ -15,7 +17,19 @@ class _ConsumptionWidgetState extends State<ConsumptionWidget> {
   int? _expandedDayIndex;
 
   @override
+  void initState() {
+    super.initState();
+    context.read<ConsumptionVm>().getConsumptions().then((consumptions) {
+      for (ConsumptionModel consumption in consumptions) {
+        print(consumption.toString());
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final ConsumptionVm consumptionVm = context.read<ConsumptionVm>();
+
     return SingleChildScrollView(
       child: Column(
         children: [

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:macromiam/data/mappers/aliment_mapper.dart';
 import 'package:macromiam/data/services/image_service.dart';
+
 import '../../data/models/aliment_model.dart';
 import '../../data/repositories/aliment_repository.dart';
 
@@ -18,7 +20,7 @@ class ListVm extends ChangeNotifier {
     final List<Map<String, dynamic>> maps =
         await alimentRepository.getAliments();
     _alimentsBackup = List.generate(maps.length, (i) {
-      return AlimentModel.fromMap(maps[i]);
+      return AlimentMapper.alimentFromMap(alimentMap: maps[i]);
     });
     _aliments = List.from(_alimentsBackup);
     notifyListeners();
@@ -38,7 +40,10 @@ class ListVm extends ChangeNotifier {
   Future<void> filterList(String input) async {
     List<AlimentModel> filteredList =
         _alimentsBackup
-            .where((aliment) => aliment.name.toUpperCase().contains(input.toUpperCase()))
+            .where(
+              (aliment) =>
+                  aliment.name.toUpperCase().contains(input.toUpperCase()),
+            )
             .toList();
     _aliments = List.from(filteredList);
     notifyListeners();

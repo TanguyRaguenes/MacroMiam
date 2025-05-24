@@ -1,28 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:macromiam/data/models/consumption_model.dart';
+import 'package:macromiam/data/services/aliment_service.dart';
 import 'package:macromiam/data/services/api_service.dart';
+import 'package:macromiam/data/services/consumption_service.dart';
 import 'package:macromiam/data/services/image_service.dart';
 import 'package:macromiam/providers/theme_provider.dart';
+import 'package:macromiam/ui/view_models/consumption_vm.dart';
 import 'package:macromiam/ui/views/screens/add_consumption_screen.dart';
 import 'package:macromiam/ui/views/screens/aliment_screen.dart';
 import 'package:macromiam/ui/views/screens/language_screen.dart';
 import 'package:macromiam/ui/views/widgets/Banner_pub_widget.dart';
 import 'package:macromiam/ui/views/widgets/consumption_widget.dart';
 import 'package:macromiam/ui/views/widgets/drawer_widget.dart';
-import 'ui/view_models/list_vm.dart';
-import 'data/services/sqlite_db_service.dart';
-import 'ui/view_models/aliment_vm.dart';
+import 'package:provider/provider.dart';
+
 import 'data/repositories/aliment_repository.dart';
+import 'data/repositories/consumption_repository.dart';
+import 'data/services/sqlite_db_service.dart';
+import 'l10n/app_localizations.dart';
+import 'providers/locale_provider.dart';
+import 'ui/view_models/aliment_vm.dart';
+import 'ui/view_models/list_vm.dart';
+import 'ui/views/screens/add_aliment_screen.dart';
 import 'ui/views/widgets/add_widget.dart';
 import 'ui/views/widgets/list_widget.dart';
 import 'ui/views/widgets/stats_widget.dart';
-import 'ui/views/screens/add_aliment_screen.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'l10n/app_localizations.dart';
-
-import 'providers/locale_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +52,31 @@ void main() {
           create:
               (BuildContext context) => AlimentRepository(
                 sqliteDbService: context.read<SqliteDbService>(),
+              ),
+        ),
+        Provider(
+          create:
+              (BuildContext context) => ConsumptionRepository(
+                sqliteDbService: context.read<SqliteDbService>(),
+              ),
+        ),
+        Provider(
+          create:
+              (BuildContext context) => AlimentService(
+                alimentRepository: context.read<AlimentRepository>(),
+              ),
+        ),
+        Provider(
+          create:
+              (BuildContext context) => ConsumptionService(
+                alimentService: context.read<AlimentService>(),
+                consumptionRepository: context.read<ConsumptionRepository>(),
+              ),
+        ),
+        ChangeNotifierProvider(
+          create:
+              (BuildContext context) => ConsumptionVm(
+                consumptionService: context.read<ConsumptionService>(),
               ),
         ),
 

@@ -1,12 +1,14 @@
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:macromiam/data/models/aliment_api_model.dart';
 import 'package:macromiam/data/services/api_service.dart';
 import 'package:macromiam/data/services/image_service.dart';
-import '../../data/repositories/aliment_repository.dart';
+
 import '../../data/models/aliment_model.dart';
+import '../../data/repositories/aliment_repository.dart';
 
 class AlimentVm extends ChangeNotifier {
   final AlimentRepository alimentRepository;
