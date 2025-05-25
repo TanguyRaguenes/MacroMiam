@@ -10,7 +10,7 @@ class AlimentRepository {
     if (aliment.id == null) {
       await sqliteDbService.saveAliment(aliment);
     } else {
-      await sqliteDbService.updateAliment(aliment);
+      await sqliteDbService.updateAliment(aliment: aliment);
     }
   }
 

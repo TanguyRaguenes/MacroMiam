@@ -1,5 +1,6 @@
 import 'package:macromiam/data/models/aliment_model.dart';
 import 'package:macromiam/data/models/consumption_model.dart';
+import 'package:macromiam/data/models/enums_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -47,10 +48,8 @@ class SqliteDbService {
     db.insert('consumptions', consumption.toMap());
   }
 
-  Future<void> updateAliment(AlimentModel aliment) async {
+  Future<void> updateAliment({required AlimentModel aliment}) async {
     final Database db = await getDatabase;
-    print('updateAliment :');
-    print(aliment.toString());
     db.rawUpdate(
       'UPDATE aliments SET name=?, proteins=?,carbohydrates=?,fat=?,calories=?,imageSource=? WHERE id=?',
       [
@@ -65,9 +64,35 @@ class SqliteDbService {
     );
   }
 
+  Future<void> updateConsumption({
+    required ConsumptionModel consumption,
+  }) async {
+    final Database db = await getDatabase;
+    db.rawUpdate(
+      'UPDATE consumptions SET alimentId=?, quantityInGrams=?,mealType=?,dayOfWeek=? WHERE id=?;',
+      [
+        consumption.aliment!.id,
+        consumption.quantityInGrams,
+        consumption.mealType.label,
+        consumption.dayOfWeek.label,
+        consumption.id,
+      ],
+    );
+  }
+
+  //'CREATE TABLE consumptions(id INTEGER PRIMARY KEY AUTOINCREMENT, alimentId integer, quantityInGrams double, mealType String, dayOfWeek String);',
+
   Future<List<Map<String, dynamic>>> getAliments() async {
     final Database db = await getDatabase;
     final List<Map<String, dynamic>> queryResult = await db.query('aliments');
+    return queryResult;
+  }
+
+  Future<List<Map<String, dynamic>>> getConsumptions() async {
+    final Database db = await getDatabase;
+    final List<Map<String, dynamic>> queryResult = await db.query(
+      'consumptions',
+    );
     return queryResult;
   }
 
@@ -83,17 +108,26 @@ class SqliteDbService {
     return null;
   }
 
-  Future<List<Map<String, dynamic>>> getConsumptions() async {
+  Future<Map<String, dynamic>?> getConsumptionById({required int id}) async {
     final Database db = await getDatabase;
-    final List<Map<String, dynamic>> queryResult = await db.query(
-      'consumptions',
+    final List<Map<String, dynamic>> result = await db.rawQuery(
+      'SELECT * FROM consumptions WHERE id=?',
+      [id],
     );
-    return queryResult;
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+    return null;
   }
 
   Future<void> deleteAliment(int id) async {
     final Database db = await getDatabase;
-    db.delete('aliments', where: 'id=?', whereArgs: [id]);
+    db.rawDelete('DELETE FROM aliments WHERE id=?', [id]);
+  }
+
+  Future<void> deleteConsumption({required int id}) async {
+    final Database db = await getDatabase;
+    db.rawDelete('DELETE FROM consumptions WHERE id=?', [id]);
   }
 
   Future<bool> isPathUsed({required String path}) async {

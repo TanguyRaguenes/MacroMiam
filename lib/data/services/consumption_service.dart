@@ -44,4 +44,8 @@ class ConsumptionService {
     }
     return null;
   }
+
+  Future<void> deleteConsumption({required int id}) async {
+    await consumptionRepository.deleteConsumption(id: id);
+  }
 }

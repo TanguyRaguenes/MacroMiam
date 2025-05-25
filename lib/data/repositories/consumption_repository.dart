@@ -14,4 +14,8 @@ class ConsumptionRepository {
   Future<List<Map<String, dynamic>>> getConsumptions() async {
     return await sqliteDbService.getConsumptions();
   }
+
+  Future<void> deleteConsumption({required int id}) async {
+    await sqliteDbService.deleteConsumption(id: id);
+  }
 }

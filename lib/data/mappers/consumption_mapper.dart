@@ -9,6 +9,7 @@ class ConsumptionMapper {
     required AlimentModel aliment,
   }) async {
     return ConsumptionModel(
+      id: map['id'],
       aliment: aliment,
       quantityInGrams: map['quantityInGrams'],
       mealType: MealTypeExtension.fromLabel(map['mealType']),

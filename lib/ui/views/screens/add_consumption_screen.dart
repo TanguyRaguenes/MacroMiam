@@ -27,7 +27,10 @@ class _AddConsumptionScreenState extends State<AddConsumptionScreen> {
   @override
   void initState() {
     super.initState();
-    _quantityController.text = widget.consumption.quantityInGrams.toString();
+    _quantityController.text =
+        widget.consumption.quantityInGrams != null
+            ? widget.consumption.quantityInGrams.toString()
+            : '';
     if (widget.consumption.aliment != null) {
       _alimentController.text = widget.consumption.aliment!.name;
     }
